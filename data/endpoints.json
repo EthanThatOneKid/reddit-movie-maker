@@ -1,0 +1,10 @@
+{
+  "subreddit": {
+    "head": "https://www.reddit.com/r/",
+    "foot": ".json"
+  },
+  "post": {
+    "head": "https://www.reddit.com/r/all/comments/",
+    "foot": ".json"
+  }
+}
