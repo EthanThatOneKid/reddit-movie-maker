@@ -1,12 +1,15 @@
 # py main.py "subreddit" "javascript"
+# helpers\post_renderer\application.windows64\post_renderer "Title" "Ethan" "Hello world" "C:/Users/acer/Documents/GitHub/reddit-movie-maker/helpers/post_renderer/1.png"
+# processing-java sketch=pwd`/post_renderer --run
 
 import sys, json, requests
 
 def create_reddit_url():
-    endpoints = json.load(open('./data/endpoints.json'))
     config = sys.argv[1]
     id = sys.argv[2]
-    url = endpoints[config]["head"] + id + endpoints[config]["foot"]
+    endpoints = json.load(open('./data/endpoints.json'))
+    endpoint = endpoints[config]
+    url = endpoint["head"] + id + endpoint["foot"]
     return url
 
 url = create_reddit_url()
