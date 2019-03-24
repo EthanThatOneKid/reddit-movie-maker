@@ -3,10 +3,10 @@
 //String body = "Hello World"; // args[3]
 //String savePath = "./recent/1.png"; // args[4]
 
-String title = args[1];
-String user = args[2];
-String body = args[3];
-String savePath = args[4];
+String title = args[0];
+String user = args[1];
+String body = args[2];
+String savePath = args[3];
 
 void setup() {
   println(title);
