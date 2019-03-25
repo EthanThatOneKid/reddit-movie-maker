@@ -1,0 +1,47 @@
+[
+  [
+    "WTF Wednesday (March 20, 2019)",
+    "AutoModerator",
+    "Post a link to a GitHub repo that you would like to have reviewed, and brace yourself for the comments!\nWhether you're a junior wanting your code sharpened or a senior interested in giving some feedback and have some time to spare, \nthis is the place.\n\n[Named after this comic](https://davidwalsh.name/demo/code-review.png)"
+  ],
+  [
+    "Learn how to make fast websites from Google expert",
+    "stoboy",
+    "Hey community!\n\nI'd like to launch new frontend related project  \u2014 something like TEDx for developers. Basically it's online talks with Q&amp;A session, but with experts from Google, Microsoft, Babel etc. \n\nNow I got into an accelerator, trying to validate the idea. I'm eager to hear your feedback, please! \n\nThis is the first announced talk. Does this look promising? Would you sign up for the talk like this?\n\n[https://dogetalks.com/web\\_performance](https://dogetalks.com/web_performance) "
+  ],
+  [
+    "Fervor - A fullstack JS library",
+    "parrissays",
+    "Hi all,  I've been slowly working on Fervor for the last couple years [https://github.com/storyforj/fervor](https://github.com/storyforj/fervor).   \n\n\nI wrote it because as mostly an indie dev I needed some problems solved around development speed while getting me all the latest and greatest tools and performance. I know many people are still using Ruby on Rails or Django and coupling it with React. This is fine, it just feels like you lose some value by jumping between JS and another language. I know lots of folks are just building their own full stack solution like this from scratch but then they typically skimp on things like server side rendering with no way to get back later. I found Next.js' routing system to be limiting personally. Sooo I was left with either building my own system or building a library like this.\n\nOh and I have docs: [https://github.com/storyforj/fervor/wiki](https://github.com/storyforj/fervor/wiki)\n\nI'm still unsure if the time is right to share Fervor but I feel like it is definitely approaching \"ready\".\n\n&amp;#x200B;"
+  ],
+  [
+    "CSP reevaluated: work in progress Library",
+    "jfet97",
+    " **What is CSP?**\n\nCSP stands for **Communicating Sequential Processes**, a model to orchestrate concurrency through the concept of channel. Even if the JS is single threaded, it is possible to start the fulfillment of multiple tasks using async functions, which can be paused.\n\n&amp;#x200B;\n\nThis library tries to take CSP \\*again\\* into the JS universe!\n\n&amp;#x200B;\n\nGitHub Project: [https://github.com/jfet97/csp](https://github.com/jfet97/csp)\n\nDocumentation: [https://jfet97.github.io/csp/](https://jfet97.github.io/csp/)"
+  ],
+  [
+    "New Time-Travel Debugger for React useReducer",
+    "rewindjs",
+    "Hey guys,\n\nMy teammates and I have been working for the past few weeks on a time-travel debugger for React's *useReducer* hook.\u00a0It's called React Rewind.\n\nWe have a working product and are finally beta launching. If you are interested in time-travel debugging and/or React, make sure to checkout our repo:\u00a0[https://github.com/reactrewind/react-rewind](https://github.com/reactrewind/react-rewind)\n\nWe are an open source project and would love to hear any inputs.\n\nThanks!"
+  ],
+  [
+    "Question about Gulp Tasks",
+    "deathcat5",
+    "Hey everyone! I am trying to use gulp to automate the concatination and minification process of js and css (from less).   \n\n\nI have the following gulpfile: \n\n&amp;#x200B;\n\n    /// &lt;binding ProjectOpened='js, watch-js, default, less-to-css, watch-less' /&gt;\n    \"use strict\";\n    \n    var gulp = require(\"gulp\");\n    var clean = require(\"gulp-clean\");\n    var ts = require(\"gulp-typescript\");\n    var uglify = require(\"gulp-uglify\");\n    var less = require('gulp-less');\n    var stripCSSComments = require('gulp-strip-css-comments');\n    var cleanCSS = require(\"gulp-clean-css\");\n    var rename = require(\"gulp-rename\");\n    var concat = require(\"gulp-concat\");\n    \n    gulp.task(\"default\", [\"js\", \"less-to-css\", \"transfer-favicon\"]);\n    \n    gulp.task(\"production\", [\"default\", \"concat-js\", \"clean-js\"/*, \"concat-css\", \"clean-css\"*/]);\n    \n    //JS Tasks\n    gulp.task(\"js\", function () {\n    \n        return gulp.src(\"Scripts/**/*ts\")\n            .pipe(ts())\n            .pipe(gulp.dest(\"wwwroot/js/\"));\n    \n    });\n    \n    gulp.task(\"concat-js\", function () {\n        gulp.src('wwwroot/js/*.js')\n            .pipe(concat('scripts.js'))\n            .pipe(gulp.dest('wwwroot/js'))\n            .pipe(rename('bundled-scripts.min.js'))\n            .pipe(uglify())\n            .pipe(gulp.dest('wwwroot/js'))\n    });\n    \n    gulp.task(\"clean-js\", function () {\n        gulp.src(['wwwroot/js/*.js', '!wwwroot/js/bundled-scripts.min.js'])\n            .pipe(clean())\n    });\n    \n    //CSS Tasks\n    gulp.task(\"less-to-css\", function () {\n        gulp.src(\"Assets/less/*.less\")\n            .pipe(less())\n            .pipe(stripCSSComments())\n            .pipe(gulp.dest(\"wwwroot/css\"));\n    });\n    \n    gulp.task(\"minify-css\", function () {\n        gulp.src('wwwroot/css/*.css')\n            .pipe(cleanCSS())\n            .pipe(rename({\n                extname: '.min.css'\n            }))\n            .pipe(gulp.dest(\"wwwroot/css/\"))\n    });\n    \n    gulp.task(\"clean-css\", [\"minify-css\"], function () {\n        gulp.src(['wwwroot/css/**/*.min.css', '!wwwroot/css/**/css-bundle.min.css'])\n            .pipe(clean())\n    });\n    \n    gulp.task(\"concat-css\", function () {\n        gulp.src(\"wwwroot/css/*.css\")\n            .pipe(concat('css-bundle.css'))\n            .pipe(gulp.dest(\"wwwroot/css/\"))\n    });\n    \n    //Miscellaneous Tasks\n    gulp.task(\"transfer-favicon\", function () {\n        return gulp.src(\"Assets/favicon.ico\")\n            .pipe(gulp.dest(\"wwwroot/\"))\n    });\n    \n    //Watch Tasks\n    gulp.task(\"watch-js\", [\"js\"], function () {\n        return gulp.watch([\"Scripts/*.ts\"], [\"js\"]);\n    });\n    \n    gulp.task(\"watch-less\", [\"less-to-css\"], function () {\n        return gulp.watch([\"Assets/less/*.less\"], [\"less-to-css\"]);\n    });\n\n&amp;#x200B;\n\n&amp;#x200B;\n\nWhen I run the `production` task manually in individual segments (i.e `default` first, then `concact-js` then `clean-js`, everything works as expected! I get one `.min. js` file, and one `.min.css` in their respective `js` and `css` folders under `wwwroot`. But, when I try to run production, it doesn't run any of my `concact-*` or `clean-*` functions. Any ideas as to what might be the cause of this? Is it because I don't have production bound to `ProjectOpened`?\n\n  \nI am using [ASP.Net](https://ASP.Net) Core, if that's any help.\n\n&amp;#x200B;\n\nThanks! "
+  ],
+  [
+    "Cardman Multiplayer - our first advanced game in React",
+    "Kartm",
+    "Hello!\n\nMe and my friend have been passionate about developing apps and programming for couple of years. We had never written anything advanced so far, just some random apps but it has changed in the previous year. In December we started creating our first full-sized React project called \"**Cardman Multiplayer**\". It is a simple game based on the traditional Hangman, a game we all surely played in our childhood. \n\nThe main factor which differs it from the classic experience is a card game mechanic (similar to Hearthstone). It took us 4 months and 200 commits to develop this game. The journey helped us to enlarge our JS knowledge and teached us that the bigger the project is, the harder it is to maintain. Every aspect of Cardman is created by us, including the look, sounds and logos. The only exceptions are fonts and emojis. \n\nWe are looking for some feedback and hope that you will enjoy your matches!\n\n&amp;#x200B;\n\n[https://github.com/VengelStudio/cardman-multiplayer](https://github.com/VengelStudio/cardman-multiplayer)\n\n&amp;#x200B;\n\nTLDR;\n\nWe wrote a multiplayer game based on Hangman but with a card game mechanics."
+  ],
+  [
+    "How my daily issue turn in to a post - Using Mappers to Organize your data.",
+    "abner_alves",
+    "I've been working in a big project, when I had figured out that We are facing issues with many components coupled directly with the API Data.\n\nSo, I decided to organize the code and the result is this post.\n\n[https://blog.codeminer42.com/using-mappers-to-organize-your-data-and-your-project-46b45d963e77?sk=2b4633aa9a84722c605a3aec1ec6d4ab](https://blog.codeminer42.com/using-mappers-to-organize-your-data-and-your-project-46b45d963e77?sk=2b4633aa9a84722c605a3aec1ec6d4ab)\n\n&amp;#x200B;\n\nI hope you enjoy it, please consider sharing and feedbacks are more than welcome."
+  ],
+  [
+    "CrumbsJS - A lightweight, intuitive, vanilla ES6 fueled JS cookie and local storage library.",
+    "nirtz",
+    "Hi, just wanted to let you guys know I've finished my cookies and localstorage library which I'm very proud of.    \nPlease take a look and contribute if possible.  \n\n  \n\n[https://github.com/nirtz89/crumbsjs](https://github.com/nirtz89/crumbsjs)"
+  ]
+]
