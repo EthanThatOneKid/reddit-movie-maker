@@ -6,10 +6,10 @@
 import os, sys, json, requests, subprocess
 
 # Helpers
-def make_post_cmd(title, user, body):
+def create_post_cmd(title, user, body):
     file_path = os.path.dirname(os.path.realpath(__file__))
-    temp_path = "{}/{}.png".format(file_path, 0)
-    cmd_template = "{} --sketch={} --run \"{}\" \"{}\" \"{}\" \"{}\""
+    temp_path = "{}/posts/{}.png".format(file_path, 0)
+    cmd_template = "{} --sketch={} --run \"{}\" \"u/{}\" \"{}\" \"{}\""
     cmd = cmd_template.format(env["processing-java"], env["sketch"], title, user, body, temp_path)
     return cmd
 
@@ -26,7 +26,19 @@ def get_subreddit_posts(r):
         ])
     return posts
 
-#def get_post_comments(r):
+def get_post_comments(r):
+    posts = []
+    title = r[0]["data"]["children"][0]["data"]["title"]
+    for child in r[1]["data"]["children"]:
+        if child["kind"] != "t1": continue
+        gimme_data = child["data"]
+        if len(gimme_data["body"]) == 0: continue
+        posts.append([
+            title,                # title
+            gimme_data["author"], # user
+            gimme_data["body"]    # body
+        ])
+    return posts
 
 def create_reddit_url():
     config = sys.argv[1]
@@ -39,11 +51,14 @@ def create_reddit_url():
 # Main Process
 env = json.load(open("./helpers/dotenv.json"))
 
-url = create_reddit_url()
-#reddit = json.load(open('./recent_test.json'))
-reddit = requests.get(url).json()
+#url = create_reddit_url()
+reddit = json.load(open('./recent_test2.json'))
+for post in get_post_comments(reddit)[:10]:
+    cmd = create_post_cmd(post[0], post[1], post[2])
+    subprocess.call(cmd)
+#reddit = requests.get(url).json()
 #posts = get_subreddit_posts(reddit)
-open('recent_test2.json', 'w').write(json.dumps(reddit, indent=2))
+#open('recent_test2.json', 'w').write(json.dumps(reddit, indent=2))
 
 #post = make_post("title", "u/EthanThatOneKid", "body blah blah blah body")
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
