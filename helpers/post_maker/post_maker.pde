@@ -1,22 +1,13 @@
-//String title = "A VERY VERY LONG TITLE"; // args[1]
-//String user = "u/EthanThatOneKid"; // args[2]
-//String body = "Hello World"; // args[3]
-//String savePath = "./recent/1.png"; // args[4]
-
-String title = args[0];
-String user = args[1];
-String body = args[2];
-String savePath = args[3];
+String title, user, body, savePath;
 
 void setup() {
-  println(title);
-  println(user);
-  println(body);
-  println(title);
+  title = args[0];
+  user = args[1];
+  body = args[2];
+  savePath = args[3];
   size(727, 409);
-  //renderPost();
-  //save(savePath);
-  //println("saved under " + savePath);
+  renderPost();
+  save(savePath);
   exit();
 };
 
