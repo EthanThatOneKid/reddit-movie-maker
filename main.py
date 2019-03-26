@@ -83,15 +83,15 @@ def split_sentences(text):
 
 # Main Process
 instance_root = create_directory_name()
+os.makedirs(instance_root)
 config = sys.argv[1]
 id = sys.argv[2]
-print(instance_root)
 
 ## Fetching and Parsing Reddit Data
 print("Fetching and Parsing Reddit Data")
 url = create_reddit_url()
 try:
-    reddit = requests.get(url).json()
+    reddit = json.load(open("recent_test2.json")) # requests.get(url).json()
     posts = get_subreddit_posts(reddit) if config == "subreddit" else get_post_comments(reddit)
 except:
     print("Sorry, Reddit is being a b**ch right now.")
@@ -99,14 +99,14 @@ except:
 
 ## Splitting Corpi into Sentences
 print("Split Corpi into Sentences")
-for i in range(posts):
+for i in range(len(posts)):
     corpus = posts[i][2]
     sentences = split_sentences(corpus)
     posts[i][2] = sentences
 data_path = "{}/data.json".format(instance_root)
 open(data_path, "w").write(json.dumps(posts))
 
-### Creating Images
+# ## Creating Images
 # print("Create Images")
 # out_dir = "{}/photos/".format(instance_root)
 # cmd = create_sketch_cmd(data_path, out_dir)
