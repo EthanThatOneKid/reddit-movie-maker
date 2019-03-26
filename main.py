@@ -90,8 +90,11 @@ print(instance_root)
 ## Fetching and Parsing Reddit Data
 print("Fetching and Parsing Reddit Data")
 url = create_reddit_url()
-reddit = requests.get(url).json()
-posts = get_subreddit_posts(reddit) if config == "subreddit" else get_post_comments(reddit)
+try:
+    reddit = requests.get(url).json()
+    posts = get_subreddit_posts(reddit) if config == "subreddit" else get_post_comments(reddit)
+except:
+    print("Sorry, Reddit is being a b**ch right now.")
 
 ## Splitting Corpi into Sentences
 print("Split Corpi into Sentences")
