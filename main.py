@@ -1,16 +1,19 @@
 # py main.py "subreddit" "javascript"
 # py main.py "post" "b53fvi"
-# helpers\post_renderer\application.windows64\post_renderer "Title" "Ethan" "Hello world" "C:/Users/acer/Documents/GitHub/reddit-movie-maker/helpers/post_renderer/1.png"
-# processing-java sketch=pwd`/post_renderer --run
 
-import os, sys, json, requests, subprocess
+import os, re, sys, json, requests, datetime, subprocess
+# from helpers import *
 
 # Helpers
-def create_post_cmd(title, user, body):
-    file_path = os.path.dirname(os.path.realpath(__file__))
-    temp_path = "{}/posts/{}.png".format(file_path, 0)
-    cmd_template = "{} --sketch={} --run \"{}\" \"u/{}\" \"{}\" \"{}\""
-    cmd = cmd_template.format(env["processing-java"], env["sketch"], title, user, body, temp_path)
+def create_directory_name():
+    full_path = os.path.dirname(os.path.realpath(__file__))
+    dir_name = datetime.datetime.today().strftime("%Y/%m/%d")
+    timestamp = int(datetime.datetime.now().timestamp())
+    return "{}/db/{}/{}".format(full_path, dir_name, timestamp)
+
+def create_sketch_cmd(in_path, out_dir):
+    cmd_template = "{} --sketch={} --run \"{}\" \"{}\""
+    cmd = cmd_template.format(env["processing-java"], env["sketch"], in_path, out_dir)
     return cmd
 
 def get_subreddit_posts(r):
@@ -41,26 +44,66 @@ def get_post_comments(r):
     return posts
 
 def create_reddit_url():
-    config = sys.argv[1]
-    id = sys.argv[2]
     endpoints = json.load(open('./data/endpoints.json'))
     endpoint = endpoints[config]
     url = endpoint["head"] + id + endpoint["foot"]
     return url
 
+def split_sentences(text):
+    alphabets= "([A-Za-z])"
+    prefixes = "(Mr|St|Mrs|Ms|Dr)[.]"
+    suffixes = "(Inc|Ltd|Jr|Sr|Co)"
+    starters = "(Mr|Mrs|Ms|Dr|He\s|She\s|It\s|They\s|Their\s|Our\s|We\s|But\s|However\s|That\s|This\s|Wherever)"
+    acronyms = "([A-Z][.][A-Z][.](?:[A-Z][.])?)"
+    websites = "[.](com|net|org|io|gov)"
+    text = " " + text + "  "
+    text = text.replace("\n"," ")
+    text = re.sub(prefixes,"\\1<prd>",text)
+    text = re.sub(websites,"<prd>\\1",text)
+    if "Ph.D" in text: text = text.replace("Ph.D.","Ph<prd>D<prd>")
+    text = re.sub("\s" + alphabets + "[.] "," \\1<prd> ",text)
+    text = re.sub(acronyms+" "+starters,"\\1<stop> \\2",text)
+    text = re.sub(alphabets + "[.]" + alphabets + "[.]" + alphabets + "[.]","\\1<prd>\\2<prd>\\3<prd>",text)
+    text = re.sub(alphabets + "[.]" + alphabets + "[.]","\\1<prd>\\2<prd>",text)
+    text = re.sub(" "+suffixes+"[.] "+starters," \\1<stop> \\2",text)
+    text = re.sub(" "+suffixes+"[.]"," \\1<prd>",text)
+    text = re.sub(" " + alphabets + "[.]"," \\1<prd>",text)
+    if "”" in text: text = text.replace(".”","”.")
+    if "\"" in text: text = text.replace(".\"","\".")
+    if "!" in text: text = text.replace("!\"","\"!")
+    if "?" in text: text = text.replace("?\"","\"?")
+    text = text.replace(".",".<stop>")
+    text = text.replace("?","?<stop>")
+    text = text.replace("!","!<stop>")
+    text = text.replace("<prd>",".")
+    sentences = text.split("<stop>")
+    sentences = sentences[:-1]
+    sentences = [s.strip() for s in sentences]
+    return sentences
+
 # Main Process
-env = json.load(open("./helpers/dotenv.json"))
+instance_root = create_directory_name()
+config = sys.argv[1]
+id = sys.argv[2]
+print(instance_root)
 
-#url = create_reddit_url()
-reddit = json.load(open('./recent_test2.json'))
-for post in get_post_comments(reddit)[:10]:
-    cmd = create_post_cmd(post[0], post[1], post[2])
-    subprocess.call(cmd)
-#reddit = requests.get(url).json()
-#posts = get_subreddit_posts(reddit)
-#open('recent_test2.json', 'w').write(json.dumps(reddit, indent=2))
+## Fetching and Parsing Reddit Data
+print("Fetching and Parsing Reddit Data")
+url = create_reddit_url()
+reddit = requests.get(url).json()
+posts = get_subreddit_posts(reddit) if config == "subreddit" else get_post_comments(reddit)
 
-#post = make_post("title", "u/EthanThatOneKid", "body blah blah blah body")
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# now child exec pls
-# open('recent_test.json', 'w').write(json.dumps(reddit, indent=2))
+## Splitting Corpi into Sentences
+print("Split Corpi into Sentences")
+for i in range(posts):
+    corpus = posts[i][2]
+    sentences = split_sentences(corpus)
+    posts[i][2] = sentences
+data_path = "{}/data.json".format(instance_root)
+open(data_path, "w").write(json.dumps(posts))
+
+### Creating Images
+# print("Create Images")
+# out_dir = "{}/photos/".format(instance_root)
+# cmd = create_sketch_cmd(data_path, out_dir)
+# subprocess.call(cmd)
