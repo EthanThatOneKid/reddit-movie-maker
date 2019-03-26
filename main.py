@@ -95,6 +95,7 @@ try:
     posts = get_subreddit_posts(reddit) if config == "subreddit" else get_post_comments(reddit)
 except:
     print("Sorry, Reddit is being a b**ch right now.")
+    exit()
 
 ## Splitting Corpi into Sentences
 print("Split Corpi into Sentences")
