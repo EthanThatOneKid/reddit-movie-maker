@@ -1,5 +1,6 @@
 # py main.py "subreddit" "javascript"
 # py main.py "post" "b53fvi"
+# moviepy ref: http://zulko.github.io/moviepy/ref/VideoClip/VideoClip.html#moviepy.video.VideoClip.ImageClip
 
 import os, re, sys, json, requests, datetime, subprocess
 # from helpers import *
