@@ -1,17 +1,21 @@
-String title, user, body, savePath;
+String inputPath, savePath;
+JSONObject inputData;
 
 void setup() {
-  title = args[0];
-  user = args[1];
-  body = args[2];
-  savePath = args[3];
+  inputPath = "C:/Users/acer/Documents/GitHub/reddit-movie-maker/db/2019/03/26/1553584300/data.json"; // args[0];
+  savePath = args[1];
+  inputData = loadJSONObject(inputPath);
   size(727, 409);
+  // dim an array of strings
+  for ([]String gimme : inputData) {
+    println(gimme);
+  }
   renderPost();
-  save(savePath);
-  exit();
+  //save(savePath);
+  //exit();
 };
 
-void renderPost() {
+void renderPost(String title, String user, String body) {
   
   background(0);
   int titleSize = 25;
