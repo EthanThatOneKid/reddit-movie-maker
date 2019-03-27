@@ -48,12 +48,12 @@ void renderPost(String title, String user, String body, String path) {
   textSize(bodySize);
   text(body, margin, gimmeY, width - (2 * margin), 9999);
   
+  // scroll down on overflow
   gimmeY += (ceil(textWidth(body) / (width - margin)) + 3) * lineSpaceScalar * (textDescent() + bodySize);
   int offset = gimmeY - height;
   line(0, gimmeY, width, gimmeY);
-  if (gimmeY > height) {
-    translate(0, -offset);
-  }
-  save(path);
+  if (gimmeY > height) translate(0, -offset);
+  saveFrame(path);
+  if (gimmeY > height) translate(0, offset);
   
 };
