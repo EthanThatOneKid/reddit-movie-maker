@@ -105,7 +105,8 @@ for i in range(len(posts)):
     sentences = split_sentences(corpus)
     posts[i][2] = sentences
 data_path = "{}/data.json".format(instance_root)
-open(data_path, "w").write(json.dumps(posts))
+gimme_data = {"data": posts}
+open(data_path, "w").write(json.dumps(gimme_data))
 
 # ## Creating Images
 # print("Create Images")
