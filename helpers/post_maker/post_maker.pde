@@ -26,6 +26,7 @@ void renderPost(String title, String user, String body, String path) {
   int userSize = 10;
   int bodySize = 20;
   int margin = 20;
+  int maxWidth = width - (2 * margin);
   int padding = 10;
   int gimmeY = padding;
   float lineSpaceScalar = 1.2;
@@ -33,8 +34,8 @@ void renderPost(String title, String user, String body, String path) {
   // title
   fill(220);
   textSize(titleSize);
-  text(title, margin, gimmeY, width - (2 * margin), height);
-  gimmeY += ceil(textWidth(title) / (width - margin)) * lineSpaceScalar * (textDescent() + titleSize);
+  text(title, margin, gimmeY, maxWidth, height);
+  gimmeY += ceil(textWidth(title) / maxWidth) * lineSpaceScalar * (textDescent() + titleSize);
   gimmeY += padding;
   
   // user
@@ -46,10 +47,10 @@ void renderPost(String title, String user, String body, String path) {
   // body
   fill(180);
   textSize(bodySize);
-  text(body, margin, gimmeY, width - (2 * margin), 9999);
+  text(body, margin, gimmeY, maxWidth, 9999);
   
   // scroll down on overflow
-  gimmeY += (ceil(textWidth(body) / (width - margin)) + 3) * lineSpaceScalar * (textDescent() + bodySize);
+  gimmeY += (ceil(textWidth(body) / maxWidth) + 3) * lineSpaceScalar * (textDescent() + bodySize);
   int offset = gimmeY - height;
   line(0, gimmeY, width, gimmeY);
   if (gimmeY > height) translate(0, -offset);
