@@ -7,7 +7,7 @@ int padding;
 float lineSpaceScalar;
 
 void setup() {
-  
+
   titleSize = 25;
   userSize = 10;
   bodySize = 20;
@@ -15,9 +15,9 @@ void setup() {
   maxWidth = width - (2 * margin);
   padding = 10;
   lineSpaceScalar = 1.15;
-  
+
   size(727, 409);
-  String root = "C:\\Users\\acer\\Documents\\GitHub\\reddit-movie-maker\\db\\2019\\03\\26\\1553584300"; // args[0];
+  String root = args[0];
   String inputPath = String.format("%s\\data.json", root);
   JSONObject rawInputData = loadJSONObject(inputPath);
   JSONArray posts = rawInputData.getJSONArray("data");
@@ -37,24 +37,24 @@ void setup() {
 };
 
 int[] getRenderSummary(String title, String user, String body) {
-  
+
   int[] result = new int[4];
   int gimmeY = margin;
-  
+
   // title
   result[1] = gimmeY;
-  
+
   // user
   textSize(titleSize);
   gimmeY += ceil(textWidth(title) / maxWidth) * lineSpaceScalar * (textDescent() + titleSize);
   gimmeY += padding;
   result[2] = gimmeY;
-  
+
   // body
   textSize(userSize);
   gimmeY += userSize + padding;
   result[3] = gimmeY;
-  
+
   // offset
   textSize(bodySize);
   gimmeY += (ceil(textWidth(body) / maxWidth) + 3) * lineSpaceScalar * (textDescent() + bodySize);
@@ -62,34 +62,34 @@ int[] getRenderSummary(String title, String user, String body) {
   if (offset < 0) offset = 0;
   result[0] = offset;
   return result;
-  
+
 };
 
 void renderPost(String title, String user, String body, String path) {
-  
+
   background(25);
-  
+
   int[] renderPositions = getRenderSummary(title, user, body);
   int offset = renderPositions[0];
   int titleY = renderPositions[1] - offset;
   int userY = renderPositions[2] - offset;
   int bodyY = renderPositions[3] - offset;
-  
+
   // title
   fill(220);
   textSize(titleSize);
   text(title, margin, titleY, maxWidth, height);
-  
+
   // user
   fill(70, 160, 210);
   textSize(userSize);
   text(user, margin, userY);
-  
+
   // body
   fill(180);
   textSize(bodySize);
   text(body, margin, bodyY, maxWidth, 9999);
-  
+
   save(path);
-  
+
 };

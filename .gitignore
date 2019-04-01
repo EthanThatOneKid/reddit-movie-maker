@@ -1,3 +1,8 @@
+################## My Own ##################
+db/
+
+################## PYTHON ##################
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
