@@ -4,7 +4,7 @@
 
 import os, re, sys, json, requests, datetime, subprocess
 from gtts import gTTS
-# from helpers import *
+# from helpers.helpers import *
 
 # Helpers
 def create_directory_name():
@@ -46,8 +46,7 @@ def get_post_comments(r):
     return posts
 
 def create_reddit_url():
-    endpoints = json.load(open('./data/endpoints.json'))
-    endpoint = endpoints[config]
+    endpoint = env[config]
     url = endpoint["head"] + id + endpoint["foot"]
     return url
 
@@ -103,7 +102,7 @@ except:
 
 ## Splitting Corpi into Sentences
 print("Splitting Corpi into Sentences")
-for i in range(posts):
+for i in range(len(posts)):
     corpus = posts[i][2]
     sentences = split_sentences(corpus)
     total_sentences += len(sentences)
@@ -121,12 +120,14 @@ open(data_path, "w").write(json.dumps(gimme_data))
 ## Synthesizing Speech
 print("Synthesizing Speech")
 cur_sentence = 0
-for i in range(posts):
+for i in range(len(posts)):
+    out_dir = "{}/audio/{}".format(instance_root, i)
+    os.makedirs(out_dir)
     sentences = posts[i][2]
-    for j in range(sentences):
+    for j in range(len(sentences)):
         sentence = sentences[j]
-        out_dir = "{}/audio/{}/{}".format(instance_root, i, j)
-        gTTS(text=sentence, lang='en').save(out_dir)
-        cur_sentence++
+        out_path = "{}/{}.mp3".format(out_dir, j)
+        gTTS(text=sentence, lang='en').save(out_path)
+        cur_sentence += 1
     percentage_completed = int(100 * cur_sentence / total_sentences)
     print("Speech synthesis {} percent complete!".format(percentage_completed))
