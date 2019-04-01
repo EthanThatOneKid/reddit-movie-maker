@@ -3,6 +3,7 @@
 # moviepy ref: http://zulko.github.io/moviepy/ref/VideoClip/VideoClip.html#moviepy.video.VideoClip.ImageClip
 
 import os, re, sys, json, requests, datetime, subprocess
+from gtts import gTTS
 # from helpers import *
 
 # Helpers
@@ -85,8 +86,10 @@ def split_sentences(text):
 # Main Process
 instance_root = create_directory_name()
 os.makedirs(instance_root)
+env = json.load(open("helpers/dotenv.json"))
 config = sys.argv[1]
 id = sys.argv[2]
+total_sentences = 0
 
 ## Fetching and Parsing Reddit Data
 print("Fetching and Parsing Reddit Data")
@@ -99,17 +102,31 @@ except:
     exit()
 
 ## Splitting Corpi into Sentences
-print("Split Corpi into Sentences")
-for i in range(len(posts)):
+print("Splitting Corpi into Sentences")
+for i in range(posts):
     corpus = posts[i][2]
     sentences = split_sentences(corpus)
+    total_sentences += len(sentences)
     posts[i][2] = sentences
 data_path = "{}/data.json".format(instance_root)
 gimme_data = {"data": posts}
 open(data_path, "w").write(json.dumps(gimme_data))
 
-# ## Creating Images
-# print("Create Images")
+## Creating Images
+# print("Creating Images")
 # out_dir = "{}/photos/".format(instance_root)
 # cmd = create_sketch_cmd(data_path, out_dir)
 # subprocess.call(cmd)
+
+## Synthesizing Speech
+print("Synthesizing Speech")
+cur_sentence = 0
+for i in range(posts):
+    sentences = posts[i][2]
+    for j in range(sentences):
+        sentence = sentences[j]
+        out_dir = "{}/audio/{}/{}".format(instance_root, i, j)
+        gTTS(text=sentence, lang='en').save(out_dir)
+        cur_sentence++
+    percentage_completed = int(100 * cur_sentence / total_sentences)
+    print("Speech synthesis {} percent complete!".format(percentage_completed))

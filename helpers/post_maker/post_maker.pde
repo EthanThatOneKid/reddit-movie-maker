@@ -1,4 +1,21 @@
+int titleSize;
+int userSize;
+int bodySize;
+int margin;
+int maxWidth;
+int padding;
+float lineSpaceScalar;
+
 void setup() {
+  
+  titleSize = 25;
+  userSize = 10;
+  bodySize = 20;
+  margin = 20;
+  maxWidth = width - (2 * margin);
+  padding = 10;
+  lineSpaceScalar = 1.15;
+  
   size(727, 409);
   String root = "C:\\Users\\acer\\Documents\\GitHub\\reddit-movie-maker\\db\\2019\\03\\26\\1553584300"; // args[0];
   String inputPath = String.format("%s\\data.json", root);
@@ -19,42 +36,60 @@ void setup() {
   exit();
 };
 
+int[] getRenderSummary(String title, String user, String body) {
+  
+  int[] result = new int[4];
+  int gimmeY = margin;
+  
+  // title
+  result[1] = gimmeY;
+  
+  // user
+  textSize(titleSize);
+  gimmeY += ceil(textWidth(title) / maxWidth) * lineSpaceScalar * (textDescent() + titleSize);
+  gimmeY += padding;
+  result[2] = gimmeY;
+  
+  // body
+  textSize(userSize);
+  gimmeY += userSize + padding;
+  result[3] = gimmeY;
+  
+  // offset
+  textSize(bodySize);
+  gimmeY += (ceil(textWidth(body) / maxWidth) + 3) * lineSpaceScalar * (textDescent() + bodySize);
+  int offset = gimmeY - height;
+  if (offset < 0) offset = 0;
+  result[0] = offset;
+  return result;
+  
+};
+
 void renderPost(String title, String user, String body, String path) {
   
-  background(26);
-  int titleSize = 25;
-  int userSize = 10;
-  int bodySize = 20;
-  int margin = 20;
-  int maxWidth = width - (2 * margin);
-  int padding = 10;
-  int gimmeY = padding;
-  float lineSpaceScalar = 1.2;
+  background(25);
+  
+  int[] renderPositions = getRenderSummary(title, user, body);
+  int offset = renderPositions[0];
+  int titleY = renderPositions[1] - offset;
+  int userY = renderPositions[2] - offset;
+  int bodyY = renderPositions[3] - offset;
   
   // title
   fill(220);
   textSize(titleSize);
-  text(title, margin, gimmeY, maxWidth, height);
-  gimmeY += ceil(textWidth(title) / maxWidth) * lineSpaceScalar * (textDescent() + titleSize);
-  gimmeY += padding;
+  text(title, margin, titleY, maxWidth, height);
   
   // user
   fill(70, 160, 210);
   textSize(userSize);
-  text(user, margin, gimmeY);
-  gimmeY += userSize + padding;
+  text(user, margin, userY);
   
   // body
   fill(180);
   textSize(bodySize);
-  text(body, margin, gimmeY, maxWidth, 9999);
+  text(body, margin, bodyY, maxWidth, 9999);
   
-  // scroll down on overflow
-  gimmeY += (ceil(textWidth(body) / maxWidth) + 3) * lineSpaceScalar * (textDescent() + bodySize);
-  int offset = gimmeY - height;
-  line(0, gimmeY, width, gimmeY);
-  if (gimmeY > height) translate(0, -offset);
-  saveFrame(path);
-  if (gimmeY > height) translate(0, offset);
+  save(path);
   
 };
