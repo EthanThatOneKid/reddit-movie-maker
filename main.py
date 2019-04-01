@@ -1,10 +1,8 @@
-# py main.py "subreddit" "javascript"
-# py main.py "post" "b53fvi"
-# moviepy ref: http://zulko.github.io/moviepy/ref/VideoClip/VideoClip.html#moviepy.video.VideoClip.ImageClip
+# py main.py "post" "b7oy9d"
 
 import os, re, sys, json, requests, datetime, subprocess
 from gtts import gTTS
-# from helpers.helpers import *
+from moviepy.editor import *
 
 # Helpers
 def create_directory_name():
@@ -89,15 +87,16 @@ env = json.load(open("helpers/dotenv.json"))
 config = sys.argv[1]
 id = sys.argv[2]
 total_sentences = 0
+title = ""
 
 ## Fetching and Parsing Reddit Data
 print("Fetching and Parsing Reddit Data")
 url = create_reddit_url()
 try:
-    reddit = json.load(open("recent_test2.json")) # requests.get(url).json()
+    reddit = requests.get(url).json()
     posts = get_subreddit_posts(reddit) if config == "subreddit" else get_post_comments(reddit)
 except:
-    print("Sorry, Reddit is being a b**ch right now.")
+    print("Sorry, Reddit is being a b*tch right now.")
     exit()
 
 ## Splitting Corpi into Sentences
@@ -107,15 +106,16 @@ for i in range(len(posts)):
     sentences = split_sentences(corpus)
     total_sentences += len(sentences)
     posts[i][2] = sentences
+title = id if config == "subreddit" else posts[0][0]
 data_path = "{}/data.json".format(instance_root)
 gimme_data = {"data": posts}
 open(data_path, "w").write(json.dumps(gimme_data))
 
 ## Creating Images
-# print("Creating Images")
-# out_dir = "{}/photos/".format(instance_root)
-# cmd = create_sketch_cmd(data_path, out_dir)
-# subprocess.call(cmd)
+print("Creating Images")
+out_dir = "{}/photos/".format(instance_root)
+cmd = create_sketch_cmd(data_path, out_dir)
+subprocess.call(cmd)
 
 ## Synthesizing Speech
 print("Synthesizing Speech")
@@ -131,3 +131,24 @@ for i in range(len(posts)):
         cur_sentence += 1
     percentage_completed = int(100 * cur_sentence / total_sentences)
     print("Speech synthesis {} percent complete!".format(percentage_completed))
+
+## Creating Video Clips
+clips = []
+cur_sentence = 0
+audio_template = "{}/audio/{}/{}.mp3"
+photo_template = "{}/photos/{}/{}.png"
+for i in range(len(posts)):
+    for j in range(len(sentences)):
+        gimme_mp3 = audio_template.format(instance_root, i, j)
+        gimme_png = photo_template.format(instance_root, i, j)
+        gimme_audio = AudioFileClip(gimme_mp3)
+        gimme_clip = ImageClip(gimme_png).setAudio(gimme_audio)
+        clips.append(gimme_clip)
+        cur_sentence += 1
+    percentage_completed = int(100 * cur_sentence / total_sentences)
+    print("Audio and image pairing {} percent complete!".format(percentage_completed))
+
+## Exporting Final Product
+save_path = "{}/{}.mp4".format(instance_root, title)
+final_video = concatenate_videoclips(clips)
+final_video.write_videofile(save_path)
