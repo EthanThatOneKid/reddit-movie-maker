@@ -6,11 +6,10 @@ from gtts import gTTS
 from moviepy.editor import *
 
 # Helpers
-def create_directory_name():
+def create_directory_name(title):
     full_path = os.path.dirname(os.path.realpath(__file__))
     dir_name = datetime.datetime.today().strftime("%Y/%m/%d")
-    timestamp = int(datetime.datetime.now().timestamp())
-    return "{}/db/{}/{}".format(full_path, dir_name, timestamp)
+    return "{}/db/{}/{}".format(full_path, dir_name, title)
 
 def create_sketch_cmd(in_dir, out_dir):
     cmd_template = "{} --sketch={} --run \"{}\" \"{}\""
@@ -18,7 +17,6 @@ def create_sketch_cmd(in_dir, out_dir):
     return cmd
 
 def get_subreddit_posts(r):
-    print(r)
     posts = []
     for child in r["data"]["children"]:
         gimme_data = child["data"]
@@ -83,13 +81,10 @@ def split_sentences(text):
     return sentences
 
 # Main Process
-instance_root = create_directory_name()
-os.makedirs(instance_root)
 env = json.load(open("helpers/dotenv.json"))
 config = sys.argv[1]
 id = sys.argv[2]
 total_sentences = 0
-title = ""
 
 ## Fetching and Parsing Reddit Data
 print("Fetching and Parsing Reddit Data")
@@ -109,6 +104,8 @@ for i in range(len(posts)):
     total_sentences += len(sentences)
     posts[i][2] = sentences
 title = id if config == "subreddit" else posts[0][0]
+instance_root = create_directory_name(title)
+os.makedirs(instance_root)
 data_path = "{}/data.json".format(instance_root)
 gimme_data = {"data": posts}
 open(data_path, "w").write(json.dumps(gimme_data))
@@ -132,7 +129,7 @@ for i in range(len(posts)):
         try:
             gTTS(text=sentence, lang='en').save(out_path)
         except:
-            err_msg = "TTS API failed to synthesize this sentence: \"{}\"".format(sentence)
+            err_msg = "TTS API failed to synthesize: \"{}\"".format(sentence)
             print(err_msg)
             exit()
         cur_sentence += 1
