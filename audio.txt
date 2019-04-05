@@ -1,0 +1,2 @@
+file C:\\Users\\acer\\Documents\\GitHub\\reddit-movie-maker\\db\\2019\\04\\01\\1554155961\\audio\\0\\0.mp3
+file C:\\Users\\acer\\Documents\\GitHub\\reddit-movie-maker\\db\\2019\\04\\01\\1554155961\\audio\\0\\1.mp3

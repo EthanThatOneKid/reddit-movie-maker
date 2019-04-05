@@ -1,0 +1,5 @@
+file C:\\Users\\acer\\Documents\\GitHub\\reddit-movie-maker\\db\\2019\\04\\01\\1554155961\\photos\\0\\0.jpeg
+duration 2
+file C:\\Users\\acer\\Documents\\GitHub\\reddit-movie-maker\\db\\2019\\04\\01\\1554155961\\photos\\0\\1.jpeg
+duration 7
+file C:\\Users\\acer\\Documents\\GitHub\\reddit-movie-maker\\db\\2019\\04\\01\\1554155961\\photos\\0\\1.jpeg
