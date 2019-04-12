@@ -16,7 +16,7 @@ void setup() {
   padding = 10;
   lineSpaceScalar = 1.15;
 
-  size(727, 409);
+  size(800, 450);
   String root = args[0];
   String inputPath = String.format("%s\\data.json", root);
   JSONObject rawInputData = loadJSONObject(inputPath);

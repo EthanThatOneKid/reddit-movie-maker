@@ -1,7 +1,9 @@
 # py main.py "post" "b7oy9d"
 
+# Dependencies
 import os, re, sys, json, requests, datetime, subprocess
 import numpy as np
+from slugify import slugify
 from gtts import gTTS
 from moviepy.editor import *
 
@@ -9,7 +11,7 @@ from moviepy.editor import *
 def create_directory_name(title):
     full_path = os.path.dirname(os.path.realpath(__file__))
     dir_name = datetime.datetime.today().strftime("%Y/%m/%d")
-    return "{}/db/{}/{}".format(full_path, dir_name, title)
+    return "{}/db/{}/{}".format(full_path, dir_name, slugify(title))
 
 def create_sketch_cmd(in_dir, out_dir):
     cmd_template = "{} --sketch={} --run \"{}\" \"{}\""
@@ -17,7 +19,11 @@ def create_sketch_cmd(in_dir, out_dir):
     return cmd
 
 def get_subreddit_posts(r):
-    posts = []
+    posts = [[
+        r["data"]["children"][0]["data"]["subreddit_name_prefixed"],
+        r["data"]["children"][0]["data"]["author"],
+        r["data"]["children"][0]["data"]["title"]
+    ]]
     for child in r["data"]["children"]:
         gimme_data = child["data"]
         if len(gimme_data["selftext"]) < 2: continue
@@ -29,7 +35,11 @@ def get_subreddit_posts(r):
     return posts
 
 def get_post_comments(r):
-    posts = []
+    posts = [[
+        r["data"]["children"][0]["data"]["subreddit_name_prefixed"],
+        r["data"]["children"][0]["data"]["author"],
+        r["data"]["children"][0]["data"]["title"]
+    ]]
     title = r[0]["data"]["children"][0]["data"]["title"]
     for child in r[1]["data"]["children"]:
         if child["kind"] != "t1": continue
@@ -93,7 +103,7 @@ try:
     reddit = requests.get(url).json()
     posts = get_subreddit_posts(reddit) if config == "subreddit" else get_post_comments(reddit)
 except:
-    print("Sorry, Reddit is being a b*tch right now.")
+    print("Sorry, Reddit is being a b*tch at the moment...")
     exit()
 
 ## Splitting Corpi into Sentences
@@ -103,6 +113,7 @@ for i in range(len(posts)):
     sentences = split_sentences(corpus)
     total_sentences += len(sentences)
     posts[i][2] = sentences
+posts = posts[:20]
 title = id if config == "subreddit" else posts[0][0]
 instance_root = create_directory_name(title)
 os.makedirs(instance_root)
@@ -137,7 +148,7 @@ for i in range(len(posts)):
     print("Speech synthesis {} percent complete!".format(percentage_completed))
 
 ## Creating Video Clips
-clips = np.array([])
+clips = []
 cur_sentence = 0
 path_template = "{}/{}/{}/{}.{}"
 for i in range(len(posts)):
@@ -146,8 +157,8 @@ for i in range(len(posts)):
         gimme_mp3 = path_template.format(instance_root, "audio", i, j, "mp3")
         gimme_png = path_template.format(instance_root, "photos", i, j, "png")
         gimme_audio = AudioFileClip(gimme_mp3)
-        gimme_clip = ImageClip(gimme_png).set_audio(gimme_audio)
-        clips = np.append(clips, gimme_clip)
+        gimme_clip = ImageClip(gimme_png).set_duration(gimme_audio.duration).set_audio(gimme_audio)
+        clips.append(gimme_clip)
         cur_sentence += 1
     percentage_completed = int(100 * cur_sentence / total_sentences)
     print("Audio and image pairing {} percent complete!".format(percentage_completed))
