@@ -36,11 +36,11 @@ def get_subreddit_posts(r):
 
 def get_post_comments(r):
     posts = [[
-        r["data"]["children"][0]["data"]["subreddit_name_prefixed"],
-        r["data"]["children"][0]["data"]["author"],
-        r["data"]["children"][0]["data"]["title"]
+        r[0]["data"]["children"][0]["data"]["subreddit_name_prefixed"],
+        r[0]["data"]["children"][0]["data"]["author"],
+        r[0]["data"]["children"][0]["data"]["title"]
     ]]
-    title = r[0]["data"]["children"][0]["data"]["title"]
+    title = posts[0][2]
     for child in r[1]["data"]["children"]:
         if child["kind"] != "t1": continue
         gimme_data = child["data"]
@@ -102,6 +102,7 @@ url = create_reddit_url()
 try:
     reddit = requests.get(url).json()
     posts = get_subreddit_posts(reddit) if config == "subreddit" else get_post_comments(reddit)
+    posts = posts[:21]
 except:
     print("Sorry, Reddit is being a b*tch at the moment...")
     exit()
@@ -113,8 +114,7 @@ for i in range(len(posts)):
     sentences = split_sentences(corpus)
     total_sentences += len(sentences)
     posts[i][2] = sentences
-posts = posts[:20]
-title = id if config == "subreddit" else posts[0][0]
+title = id if config == "subreddit" else posts[1][0]
 instance_root = create_directory_name(title)
 os.makedirs(instance_root)
 data_path = "{}/data.json".format(instance_root)
@@ -166,4 +166,4 @@ for i in range(len(posts)):
 ## Exporting Final Product
 save_path = "{}/{}.mp4".format(instance_root, title)
 final_video = concatenate_videoclips(clips)
-final_video.write_videofile(save_path)
+final_video.set_fps(24).write_videofile(save_path)
