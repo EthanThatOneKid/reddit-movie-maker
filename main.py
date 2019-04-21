@@ -2,7 +2,7 @@
 
 # Dependencies
 import os, re, sys, json, requests, datetime, subprocess
-import numpy as np
+# import numpy as np
 from slugify import slugify
 from gtts import gTTS
 from moviepy.editor import *
