@@ -1,4 +1,5 @@
 # py main.py "post" "b7oy9d"
+# https://praw.readthedocs.io/en/latest/getting_started/quick_start.html
 
 # Dependencies
 import os, re, sys, json, requests, datetime, subprocess
