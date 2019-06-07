@@ -7,6 +7,7 @@ import os, re, sys, json, requests, datetime, subprocess
 from slugify import slugify
 from gtts import gTTS
 from moviepy.editor import *
+import praw
 
 # Helpers
 def create_directory_name(title):
