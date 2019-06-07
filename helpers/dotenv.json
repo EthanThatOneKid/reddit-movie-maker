@@ -1,12 +1,7 @@
 {
   "processing-java": "C:\\processing-3.5.3\\processing-java.exe",
   "sketch": "C:\\Users\\acer\\Documents\\GitHub\\reddit-movie-maker\\helpers\\post_maker",
-  "subreddit": {
-    "head": "https://www.reddit.com/r/",
-    "foot": ".json"
-  },
-  "post": {
-    "head": "https://www.reddit.com/r/all/comments/",
-    "foot": ".json"
-  }
+  "client_id": "3mdF7SOjNvE0Pw",
+  "client_secret": "MztMbPa5LMEd8ipXCtwliiILy4Q",
+  "user_agent": "Reddit Movie Maker by u/EthanThatOneKid"
 }

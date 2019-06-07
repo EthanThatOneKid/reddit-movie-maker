@@ -112,9 +112,15 @@ except:
 print("Getting Comments from Reddit Submission Instance")
 submission = reddit.submission(id=post_id)
 submission.comment_sort = "top" # "confidence"
-top_level_comments = list(submission.comments)
-print(top_level_comments)
+posts = []
+for comment in submission.comments:
+    if "body" not in comment.__dict__ or len(comment.body) < 3: break
+    author = comment.author if "author" in comment.__dict__ else "Anonymous"
+    if type(author) is dict: author = author.__dict__.name #if "name" in author.__dict__ else "Anonymous"
+    body = split_sentences(comment.body)
+    posts.append([submission.title, author, body])
 
+print(posts)
 # ## Splitting Corpi into Sentences
 # print("Splitting Corpi into Sentences")
 # for i in range(len(posts)):
