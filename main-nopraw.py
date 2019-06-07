@@ -1,4 +1,4 @@
-# py main.py "b7oy9d"
+# py main.py "post" "b7oy9d"
 # https://praw.readthedocs.io/en/latest/getting_started/quick_start.html
 
 # Dependencies
@@ -7,7 +7,6 @@ import os, re, sys, json, requests, datetime, subprocess
 from slugify import slugify
 from gtts import gTTS
 from moviepy.editor import *
-import praw
 
 # Helpers
 def create_directory_name(title):
@@ -94,84 +93,78 @@ def split_sentences(text):
 
 # Main Process
 env = json.load(open("helpers/dotenv.json"))
-post_id = sys.argv[1]
+config = sys.argv[1]
+id = sys.argv[2]
+total_sentences = 0
 
-## Signing into Reddit's Delicious Server
-print("Signing into Reddit's Delicious Server")
+## Fetching and Parsing Reddit Data
+print("Fetching and Parsing Reddit Data")
+url = create_reddit_url()
 try:
-    reddit = praw.Reddit(
-        client_id=env["client_id"],
-        client_secret=env["client_secret"],
-        user_agent=env["user_agent"]
-    )
+    reddit = requests.get(url).json()
+    posts = get_subreddit_posts(reddit) if config == "subreddit" else get_post_comments(reddit)
+    posts = posts[:21]
 except:
     print("Sorry, Reddit is being a b*tch at the moment...")
     exit()
 
-## Getting Comments from Reddit Submission Instance
-print("Getting Comments from Reddit Submission Instance")
-submission = reddit.submission(id=post_id)
-submission.comment_sort = "top" # "confidence"
-top_level_comments = list(submission.comments)
-print(top_level_comments)
+## Splitting Corpi into Sentences
+print("Splitting Corpi into Sentences")
+for i in range(len(posts)):
+    corpus = posts[i][2]
+    sentences = split_sentences(corpus)
+    total_sentences += len(sentences)
+    posts[i][2] = sentences
+title = id if config == "subreddit" else posts[1][0]
+instance_root = create_directory_name(title)
+os.makedirs(instance_root)
+data_path = "{}/data.json".format(instance_root)
+gimme_data = {"data": posts}
+open(data_path, "w").write(json.dumps(gimme_data))
 
-# ## Splitting Corpi into Sentences
-# print("Splitting Corpi into Sentences")
-# for i in range(len(posts)):
-#     corpus = posts[i][2]
-#     sentences = split_sentences(corpus)
-#     total_sentences += len(sentences)
-#     posts[i][2] = sentences
-# title = id if config == "subreddit" else posts[1][0]
-# instance_root = create_directory_name(title)
-# os.makedirs(instance_root)
-# data_path = "{}/data.json".format(instance_root)
-# gimme_data = {"data": posts}
-# open(data_path, "w").write(json.dumps(gimme_data))
-#
-# ## Creating Images
-# print("Creating Images")
-# out_dir = "{}/photos/".format(instance_root)
-# cmd = create_sketch_cmd(instance_root, out_dir)
-# subprocess.call(cmd)
-#
-# ## Synthesizing Speech
-# print("Synthesizing Speech")
-# cur_sentence = 0
-# for i in range(len(posts)):
-#     out_dir = "{}/audio/{}".format(instance_root, i)
-#     os.makedirs(out_dir)
-#     sentences = posts[i][2]
-#     for j in range(len(sentences)):
-#         sentence = sentences[j]
-#         out_path = "{}/{}.mp3".format(out_dir, j)
-#         try:
-#             gTTS(text=sentence, lang='en').save(out_path)
-#         except:
-#             err_msg = "TTS API failed to synthesize: \"{}\"".format(sentence)
-#             print(err_msg)
-#             exit()
-#         cur_sentence += 1
-#     percentage_completed = int(100 * cur_sentence / total_sentences)
-#     print("Speech synthesis {} percent complete!".format(percentage_completed))
-#
-# ## Creating Video Clips
-# clips = []
-# cur_sentence = 0
-# path_template = "{}/{}/{}/{}.{}"
-# for i in range(len(posts)):
-#     sentences = posts[i][2]
-#     for j in range(len(sentences)):
-#         gimme_mp3 = path_template.format(instance_root, "audio", i, j, "mp3")
-#         gimme_png = path_template.format(instance_root, "photos", i, j, "png")
-#         gimme_audio = AudioFileClip(gimme_mp3)
-#         gimme_clip = ImageClip(gimme_png).set_duration(gimme_audio.duration).set_audio(gimme_audio)
-#         clips.append(gimme_clip)
-#         cur_sentence += 1
-#     percentage_completed = int(100 * cur_sentence / total_sentences)
-#     print("Audio and image pairing {} percent complete!".format(percentage_completed))
-#
-# ## Exporting Final Product
-# save_path = "{}/{}.mp4".format(instance_root, title)
-# final_video = concatenate_videoclips(clips)
-# final_video.set_fps(24).write_videofile(save_path)
+## Creating Images
+print("Creating Images")
+out_dir = "{}/photos/".format(instance_root)
+cmd = create_sketch_cmd(instance_root, out_dir)
+subprocess.call(cmd)
+
+## Synthesizing Speech
+print("Synthesizing Speech")
+cur_sentence = 0
+for i in range(len(posts)):
+    out_dir = "{}/audio/{}".format(instance_root, i)
+    os.makedirs(out_dir)
+    sentences = posts[i][2]
+    for j in range(len(sentences)):
+        sentence = sentences[j]
+        out_path = "{}/{}.mp3".format(out_dir, j)
+        try:
+            gTTS(text=sentence, lang='en').save(out_path)
+        except:
+            err_msg = "TTS API failed to synthesize: \"{}\"".format(sentence)
+            print(err_msg)
+            exit()
+        cur_sentence += 1
+    percentage_completed = int(100 * cur_sentence / total_sentences)
+    print("Speech synthesis {} percent complete!".format(percentage_completed))
+
+## Creating Video Clips
+clips = []
+cur_sentence = 0
+path_template = "{}/{}/{}/{}.{}"
+for i in range(len(posts)):
+    sentences = posts[i][2]
+    for j in range(len(sentences)):
+        gimme_mp3 = path_template.format(instance_root, "audio", i, j, "mp3")
+        gimme_png = path_template.format(instance_root, "photos", i, j, "png")
+        gimme_audio = AudioFileClip(gimme_mp3)
+        gimme_clip = ImageClip(gimme_png).set_duration(gimme_audio.duration).set_audio(gimme_audio)
+        clips.append(gimme_clip)
+        cur_sentence += 1
+    percentage_completed = int(100 * cur_sentence / total_sentences)
+    print("Audio and image pairing {} percent complete!".format(percentage_completed))
+
+## Exporting Final Product
+save_path = "{}/{}.mp4".format(instance_root, title)
+final_video = concatenate_videoclips(clips)
+final_video.set_fps(24).write_videofile(save_path)
