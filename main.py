@@ -20,12 +20,20 @@ def create_sketch_cmd(in_dir, out_dir):
     cmd = cmd_template.format(env["processing-java"], env["sketch"], in_dir, out_dir)
     return cmd
 
-def getAuthor(r):
+def get_author(r):
     try:
         author = r.author.name
     except:
         author = "Anonymous"
     return author
+
+def render_progress(ratio, width=40):
+    completed_units = int(ratio * width) - 1
+    remaining_units = width - completed_units
+    completion = "{}>{}".format("=" * completed_units, " " * remaining_units)
+    render = "[{}] {}% Complete".format(completion, int(100 * ratio))
+    print(render)
+    sys.stdout.flush()
 
 def split_sentences(text):
     alphabets= "([A-Za-z])"
@@ -63,6 +71,7 @@ def split_sentences(text):
 # Main Process
 env = json.load(open("./helpers/dotenv.json"))
 post_id = sys.argv[1]
+comment_limit = 20
 
 ## Signing into Reddit's Delicious Server
 print("Signing into Reddit's Delicious Server")
@@ -80,12 +89,13 @@ except:
 print("Getting Comments from Reddit Submission Instance")
 submission = reddit.submission(id=post_id)
 submission.comment_sort = "top" # "confidence"
-posts = [[submission.subreddit.display_name, getAuthor(submission), [submission.title]]]
-for comment in submission.comments:
+posts = [[submission.subreddit.display_name, get_author(submission), [submission.title]]]
+total_sentences = 0
+for comment in submission.comments[:comment_limit]:
     if "body" not in comment.__dict__ or len(comment.body) < 3: break
-    author = getAuthor(comment)
-    body = split_sentences(comment.body)
-    posts.append([submission.title, author, body])
+    comment_sentences = split_sentences(comment.body)
+    total_sentences += len(comment_sentences)
+    posts.append([submission.title, get_author(comment), comment_sentences])
 
 ## Preparing Data for Imaging
 instance_root = create_directory_name(submission.title)
@@ -93,7 +103,6 @@ if os.path.isdir(instance_root):
     shutil.rmtree(instance_root)
 os.makedirs(instance_root)
 data_path = "{}/data.json".format(instance_root)
-posts = posts[:5]
 open(data_path, "w").write(json.dumps({"data": posts}))
 
 ## Creating Images
@@ -101,46 +110,55 @@ print("Creating Images")
 out_dir = "{}/photos/".format(instance_root)
 cmd = create_sketch_cmd(instance_root, out_dir)
 subprocess.call(cmd)
-#
-# ## Synthesizing Speech
-# print("Synthesizing Speech")
-# cur_sentence = 0
-# for i in range(len(posts)):
-#     out_dir = "{}/audio/{}".format(instance_root, i)
-#     os.makedirs(out_dir)
-#     sentences = posts[i][2]
-#     for j in range(len(sentences)):
-#         sentence = sentences[j]
-#         out_path = "{}/{}.mp3".format(out_dir, j)
-#         try:
-#             gTTS(text=sentence, lang='en').save(out_path)
-#         except:
-#             err_msg = "TTS API failed to synthesize: \"{}\"".format(sentence)
-#             print(err_msg)
-#             exit()
-#         cur_sentence += 1
-#     percentage_completed = int(100 * cur_sentence / total_sentences)
-#     print("Speech synthesis {} percent complete!".format(percentage_completed))
-#
-# ## Creating Video Clips
-# clips = []
-# cur_sentence = 0
-# path_template = "{}/{}/{}/{}.{}"
-# for i in range(len(posts)):
-#     sentences = posts[i][2]
-#     for j in range(len(sentences)):
-#         gimme_mp3 = path_template.format(instance_root, "audio", i, j, "mp3")
-#         gimme_png = path_template.format(instance_root, "photos", i, j, "png")
-#         gimme_audio = AudioFileClip(gimme_mp3)
-#         gimme_clip = ImageClip(gimme_png).set_duration(gimme_audio.duration).set_audio(gimme_audio)
-#         clips.append(gimme_clip)
-#         cur_sentence += 1
-#     percentage_completed = int(100 * cur_sentence / total_sentences)
-#     print("Audio and image pairing {} percent complete!".format(percentage_completed))
-#
-# ## Exporting Final Product
-# save_path = "{}/{}.mp4".format(instance_root, title)
-# final_video = concatenate_videoclips(clips)
-# final_video.set_fps(24).write_videofile(save_path)
 
+## Synthesizing Speech
+print("Synthesizing Speech")
+cur_sentence = 0
+for i in range(len(posts)):
+    out_dir = "{}/audio/{}".format(instance_root, i)
+    os.makedirs(out_dir)
+    sentences = posts[i][2]
+    for j in range(len(sentences)):
+        sentence = sentences[j]
+        out_path = "{}/{}.mp3".format(out_dir, j)
+        try:
+            gTTS(text=sentence, lang='en').save(out_path)
+        except:
+            err_msg = "TTS API failed to synthesize: \"{}\"".format(sentence)
+            print(err_msg)
+            exit()
+        cur_sentence += 1
+    percentage_completed = cur_sentence / total_sentences
+    render_progress(percentage_completed)
+    # print("Speech synthesis {} percent complete!".format(percentage_completed))
+
+## Creating Video Clips
+clips = []
+cur_sentence = 0
+path_template = "{}/{}/{}/{}.{}"
+for i in range(len(posts)):
+    sentences = posts[i][2]
+    for j in range(len(sentences)):
+        gimme_mp3 = path_template.format(instance_root, "audio", i, j, "mp3")
+        gimme_png = path_template.format(instance_root, "photos", i, j, "png")
+        gimme_audio = AudioFileClip(gimme_mp3)
+        gimme_clip = ImageClip(gimme_png).set_duration(gimme_audio.duration).set_audio(gimme_audio)
+        clips.append(gimme_clip)
+        cur_sentence += 1
+    percentage_completed = int(cur_sentence / total_sentences)
+    print("Audio and image pairing {} percent complete!".format(percentage_completed))
+
+## Exporting Final Product
+print("Exporting Final Product")
+save_path = "{}/{}.mp4".format(instance_root, "final")
+final_video = concatenate_videoclips(clips)
+final_video.write_videofile(save_path, fps=24)
+
+## Deleting All Temporary Files
+print("Deleting All Temporary Files")
+shutil.rmtree("{}/audio/".format(instance_root))
+shutil.rmtree("{}/photos/".format(instance_root))
+os.remove("{}/data.json".format(instance_root))
+
+## All Done!
 print("😊 All Done! 😊")
