@@ -7,6 +7,10 @@
 * `slugify`
 * `google-api-python-client`
 
+## Sample Scripts
+* `py main.py "POST_ID"`: saves video as `db/DATE/[TITLE]/final.mp4`
+* `py upload_video.py python upload_video.py --file="[FILE]" --title="[TITLE]" --description="DESCRIPTION" --keywords="KEYWORD1,KEYWORD2" --category="[https://gist.github.com/dgp/1b24bf2961521bd75d6c | 24]" --privacyStatus="PRIVATE | PUBLIC"`: uploads video to YouTube
+
 ## Vision
 Be able to input a comment thread or subreddit and have this program go through the most popular posts, visualize the text as an image, synthesize a voice to read off the text, place them together, and stitch all of the clips together to create a variable length video.
 If this works, I can make countless Reddit videos daily and become a millionaire if the videos amass a big following. :)
