@@ -116,15 +116,15 @@ subprocess.call(cmd)
 
 ## Synthesizing Speech
 print("Synthesizing Speech")
-cur_sentence = 0
+cur_sentence, cur_post = 0, 0
 for i in range(len(posts)):
     out_dir = "{}/audio/{}".format(instance_root, i)
     os.makedirs(out_dir)
     sentences = posts[i][2]
+    gimme_lang = "en-uk" if cur_post % 2 == 1 else "en-au"
     for j in range(len(sentences)):
         sentence = sentences[j]
         out_path = "{}/{}.mp3".format(out_dir, j)
-        gimme_lang = "en-uk" if cur_sentence % 2 == 1 else "en-au"
         try:
             gTTS(text=sentence, lang=gimme_lang).save(out_path)
         except:
@@ -133,6 +133,7 @@ for i in range(len(posts)):
             exit()
         cur_sentence += 1
         render_progress(cur_sentence / total_sentences)
+    cur_post += 1
 print("")
 
 ## Creating Video Clips
