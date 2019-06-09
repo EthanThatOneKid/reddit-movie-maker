@@ -124,7 +124,7 @@ for i in range(len(posts)):
     for j in range(len(sentences)):
         sentence = sentences[j]
         out_path = "{}/{}.mp3".format(out_dir, j)
-        gimme_lang = "en-uk" if cur_sentence % 2 == 1 else "un-au"
+        gimme_lang = "en-uk" if cur_sentence % 2 == 1 else "en-au"
         try:
             gTTS(text=sentence, lang=gimme_lang).save(out_path)
         except:
