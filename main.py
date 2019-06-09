@@ -1,9 +1,5 @@
-# py main.py "b7oy9d"
-# https://praw.readthedocs.io/en/latest/getting_started/quick_start.html
-
 # Dependencies
-import os, re, sys, json, shutil, requests, datetime, subprocess
-# import numpy as np
+import os, re, sys, json, time, shutil, requests, datetime, subprocess
 from slugify import slugify
 from gtts import gTTS
 from moviepy.editor import *
@@ -28,12 +24,15 @@ def get_author(r):
     return author
 
 def render_progress(ratio, width=40):
-    completed_units = int(ratio * width) - 1
+    completed_units = int(ratio * width)
     remaining_units = width - completed_units
     completion = "{}>{}".format("=" * completed_units, " " * remaining_units)
     render = "[{}] {}% Complete".format(completion, int(100 * ratio))
-    print(render)
+    sys.stdout.write('\r')
+    sys.stdout.write(render)
     sys.stdout.flush()
+    time.sleep(0.25)
+    return render
 
 def split_sentences(text):
     alphabets= "([A-Za-z])"
@@ -130,7 +129,7 @@ for i in range(len(posts)):
         cur_sentence += 1
     percentage_completed = cur_sentence / total_sentences
     render_progress(percentage_completed)
-    # print("Speech synthesis {} percent complete!".format(percentage_completed))
+
 
 ## Creating Video Clips
 clips = []
@@ -145,8 +144,8 @@ for i in range(len(posts)):
         gimme_clip = ImageClip(gimme_png).set_duration(gimme_audio.duration).set_audio(gimme_audio)
         clips.append(gimme_clip)
         cur_sentence += 1
-    percentage_completed = int(cur_sentence / total_sentences)
-    print("Audio and image pairing {} percent complete!".format(percentage_completed))
+    percentage_completed = cur_sentence / total_sentences
+    render_progress(percentage_completed)
 
 ## Exporting Final Product
 print("Exporting Final Product")
