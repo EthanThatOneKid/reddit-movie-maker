@@ -5,8 +5,6 @@
 * `moviepy`
 * `praw`
 * `slugify`
-* `google-api-python-client`
-* `httplib`
 
 ## Etok Description Boilerplate
 Welcome to the description 🔮! You can support the channel by donating a virtual coffee from https://www.buymeacoff.ee/etok ☕ and leaving plenty of super cool likes 👍 and comments 💬! This video is based on a post from https://www.reddit.com/r/AskReddit.
