@@ -128,9 +128,7 @@ for i in range(len(posts)):
             print(err_msg)
             exit()
         cur_sentence += 1
-    percentage_completed = cur_sentence / total_sentences
-    render_progress(percentage_completed)
-
+        render_progress(cur_sentence / total_sentences)
 
 ## Creating Video Clips
 print("Creating Video Clips")
@@ -146,8 +144,7 @@ for i in range(len(posts)):
         gimme_clip = ImageClip(gimme_png).set_duration(gimme_audio.duration).set_audio(gimme_audio)
         clips.append(gimme_clip)
         cur_sentence += 1
-    percentage_completed = cur_sentence / total_sentences
-    render_progress(percentage_completed)
+        render_progress(cur_sentence / total_sentences)
 
 ## Exporting Final Product
 print("Exporting Final Product")
