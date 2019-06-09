@@ -124,8 +124,9 @@ for i in range(len(posts)):
     for j in range(len(sentences)):
         sentence = sentences[j]
         out_path = "{}/{}.mp3".format(out_dir, j)
+        gimme_lang = "en-uk" if cur_sentence % 2 == 1 else "un-au"
         try:
-            gTTS(text=sentence, lang='en').save(out_path)
+            gTTS(text=sentence, lang=gimme_lang).save(out_path)
         except:
             err_msg = "TTS API failed to synthesize: \"{}\"".format(sentence)
             print(err_msg)
