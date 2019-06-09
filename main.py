@@ -69,6 +69,7 @@ def split_sentences(text):
 # Main Process
 env = json.load(open("./helpers/dotenv.json"))
 post_id = sys.argv[1]
+end_card = ["Thanks!", "EthanThatOneKid", "Thanks for watching! Please consider liking this video and subscribing to my channel!"]
 comment_limit = 20
 
 ## Signing into Reddit's Delicious Server
@@ -94,7 +95,7 @@ for comment in submission.comments[:comment_limit]:
     comment_sentences = split_sentences(comment.body)
     total_sentences += len(comment_sentences)
     posts.append([submission.title, get_author(comment), comment_sentences])
-
+posts.append(end_card)
 ## Preparing Data for Imaging
 print("Preparing Data for Imaging")
 instance_root = create_directory_name(submission.title)
