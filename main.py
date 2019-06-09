@@ -97,6 +97,7 @@ for comment in submission.comments[:comment_limit]:
     posts.append([submission.title, get_author(comment), comment_sentences])
 
 ## Preparing Data for Imaging
+print("Preparing Data for Imaging")
 instance_root = create_directory_name(submission.title)
 if os.path.isdir(instance_root):
     shutil.rmtree(instance_root)
@@ -132,6 +133,7 @@ for i in range(len(posts)):
 
 
 ## Creating Video Clips
+print("Creating Video Clips")
 clips = []
 cur_sentence = 0
 path_template = "{}/{}/{}/{}.{}"
