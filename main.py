@@ -2,7 +2,7 @@
 # https://praw.readthedocs.io/en/latest/getting_started/quick_start.html
 
 # Dependencies
-import os, re, sys, json, requests, datetime, subprocess
+import os, re, sys, json, shutil, requests, datetime, subprocess
 # import numpy as np
 from slugify import slugify
 from gtts import gTTS
@@ -11,53 +11,21 @@ import praw
 
 # Helpers
 def create_directory_name(title):
-    full_path = os.path.dirname(os.path.realpath(__file__))
-    dir_name = datetime.datetime.today().strftime("%Y/%m/%d")
-    return "{}/db/{}/{}".format(full_path, dir_name, slugify(title))
+    cur_path = os.path.dirname(os.path.realpath(__file__))
+    dir_name = datetime.datetime.today().strftime("%Y-%m-%d")
+    return "{}/db/{}/{}".format(cur_path, dir_name, slugify(title))
 
 def create_sketch_cmd(in_dir, out_dir):
     cmd_template = "{} --sketch={} --run \"{}\" \"{}\""
     cmd = cmd_template.format(env["processing-java"], env["sketch"], in_dir, out_dir)
     return cmd
 
-def get_subreddit_posts(r):
-    posts = [[
-        r["data"]["children"][0]["data"]["subreddit_name_prefixed"],
-        r["data"]["children"][0]["data"]["author"],
-        r["data"]["children"][0]["data"]["title"]
-    ]]
-    for child in r["data"]["children"]:
-        gimme_data = child["data"]
-        if len(gimme_data["selftext"]) < 2: continue
-        posts.append([
-            gimme_data["title"],   # title
-            gimme_data["author"],  # user
-            gimme_data["selftext"] # body
-        ])
-    return posts
-
-def get_post_comments(r):
-    posts = [[
-        r[0]["data"]["children"][0]["data"]["subreddit_name_prefixed"],
-        r[0]["data"]["children"][0]["data"]["author"],
-        r[0]["data"]["children"][0]["data"]["title"]
-    ]]
-    title = posts[0][2]
-    for child in r[1]["data"]["children"]:
-        if child["kind"] != "t1": continue
-        gimme_data = child["data"]
-        if len(gimme_data["body"]) < 2: continue
-        posts.append([
-            title,                # title
-            gimme_data["author"], # user
-            gimme_data["body"]    # body
-        ])
-    return posts
-
-def create_reddit_url():
-    endpoint = env[config]
-    url = endpoint["head"] + id + endpoint["foot"]
-    return url
+def getAuthor(r):
+    try:
+        author = r.author.name
+    except:
+        author = "Anonymous"
+    return author
 
 def split_sentences(text):
     alphabets= "([A-Za-z])"
@@ -93,7 +61,7 @@ def split_sentences(text):
     return sentences
 
 # Main Process
-env = json.load(open("helpers/dotenv.json"))
+env = json.load(open("./helpers/dotenv.json"))
 post_id = sys.argv[1]
 
 ## Signing into Reddit's Delicious Server
@@ -112,34 +80,27 @@ except:
 print("Getting Comments from Reddit Submission Instance")
 submission = reddit.submission(id=post_id)
 submission.comment_sort = "top" # "confidence"
-posts = []
+posts = [[submission.subreddit.display_name, getAuthor(submission), [submission.title]]]
 for comment in submission.comments:
     if "body" not in comment.__dict__ or len(comment.body) < 3: break
-    author = comment.author if "author" in comment.__dict__ else "Anonymous"
-    if type(author) is dict: author = author.__dict__.name #if "name" in author.__dict__ else "Anonymous"
+    author = getAuthor(comment)
     body = split_sentences(comment.body)
     posts.append([submission.title, author, body])
 
-print(posts)
-# ## Splitting Corpi into Sentences
-# print("Splitting Corpi into Sentences")
-# for i in range(len(posts)):
-#     corpus = posts[i][2]
-#     sentences = split_sentences(corpus)
-#     total_sentences += len(sentences)
-#     posts[i][2] = sentences
-# title = id if config == "subreddit" else posts[1][0]
-# instance_root = create_directory_name(title)
-# os.makedirs(instance_root)
-# data_path = "{}/data.json".format(instance_root)
-# gimme_data = {"data": posts}
-# open(data_path, "w").write(json.dumps(gimme_data))
-#
-# ## Creating Images
-# print("Creating Images")
-# out_dir = "{}/photos/".format(instance_root)
-# cmd = create_sketch_cmd(instance_root, out_dir)
-# subprocess.call(cmd)
+## Preparing Data for Imaging
+instance_root = create_directory_name(submission.title)
+if os.path.isdir(instance_root):
+    shutil.rmtree(instance_root)
+os.makedirs(instance_root)
+data_path = "{}/data.json".format(instance_root)
+posts = posts[:5]
+open(data_path, "w").write(json.dumps({"data": posts}))
+
+## Creating Images
+print("Creating Images")
+out_dir = "{}/photos/".format(instance_root)
+cmd = create_sketch_cmd(instance_root, out_dir)
+subprocess.call(cmd)
 #
 # ## Synthesizing Speech
 # print("Synthesizing Speech")
@@ -181,3 +142,5 @@ print(posts)
 # save_path = "{}/{}.mp4".format(instance_root, title)
 # final_video = concatenate_videoclips(clips)
 # final_video.set_fps(24).write_videofile(save_path)
+
+print("😊 All Done! 😊")
