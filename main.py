@@ -69,7 +69,7 @@ def split_sentences(text):
 # Main Process
 env = json.load(open("./helpers/dotenv.json"))
 post_id = sys.argv[1]
-end_card = ["Thanks!", "EthanThatOneKid", "Thanks for watching! Please consider liking this video and subscribing to my channel!"]
+end_card = ["Thanks!", "EthanThatOneKid", ["Thanks for watching! Please consider liking this video and subscribing to my channel!"]]
 comment_limit = 20
 
 ## Signing into Reddit's Delicious Server
@@ -167,4 +167,4 @@ os.remove("{}/data.json".format(instance_root))
 print("😊 All Done! 😊")
 print("Final Product saved as...")
 print(save_path)
-end()
+exit()
