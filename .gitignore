@@ -1,7 +1,7 @@
 ################## My Own ##################
 db/*
 helpers/dotenv.json
-client_secrets.json
+client-secret.json
 
 ################## PYTHON ##################
 
