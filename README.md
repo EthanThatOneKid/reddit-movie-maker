@@ -6,15 +6,12 @@
 * `praw`
 * `slugify`
 * `google-api-python-client`
+* `httplib`
 
 ## Sample Scripts
 * `py main.py "POST_ID"`
   * saves video as `db/DATE/[TITLE]/final.mp4`
   * example: `py main.py "b7oy9d"`
-* `py upload_video.py python upload_video.py --file="[FILE]" --title="[TITLE]" --description="DESCRIPTION" --keywords="KEYWORD1,KEYWORD2" --category="[https://gist.github.com/dgp/1b24bf2961521bd75d6c | 24]" --privacyStatus="PRIVATE | PUBLIC"`
-  * uploads video to YouTube
-  * example: `py upload_video.py python upload_video.py --file="db/2019-06-08/goodwill-thrift-shop-workers-what-are-some-of-the-strangest-things-you-ve-found-in-the-donations/final.mp4" --title="r/AskReddit - WHAT ARE SOME OF THE THINGS YOU'VE FOUND IN THE DONATIONS" --description="https://www.reddit.com/r/AskReddit/comments/b7oy9d/" --keywords="reddit,askreddit,commentary,programming" --category="24" --privacyStatus="PRIVATE"`
-
 
 ## Vision
 Be able to input a comment thread or subreddit and have this program go through the most popular posts, visualize the text as an image, synthesize a voice to read off the text, place them together, and stitch all of the clips together to create a variable length video.
