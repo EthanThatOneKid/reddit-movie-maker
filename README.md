@@ -9,9 +9,7 @@
 * `httplib`
 
 ## Etok Description Boilerplate
-Welcome to the description! You can support the channel by buying me a virtual coffee and leaving plenty of super cool likes and comments!
-😊
-This video is based on a post from [r/AskReddit](https://www.reddit.com/r/AskReddit/).
+Welcome to the description 🔮! You can support the channel by donating a virtual coffee from https://www.buymeacoff.ee/etok ☕ and leaving plenty of super cool likes 👍 and comments 💬! This video is based on a post from https://www.reddit.com/r/AskReddit.
 
 ## Sample Scripts
 * `py main.py "POST_ID"`
