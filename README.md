@@ -1,5 +1,12 @@
 # Reddit Movie Maker
 
+## Requirements
+* `gtts`
+* `moviepy`
+* `praw`
+* `slugify`
+* `google-api-python-client`
+
 ## Vision
 Be able to input a comment thread or subreddit and have this program go through the most popular posts, visualize the text as an image, synthesize a voice to read off the text, place them together, and stitch all of the clips together to create a variable length video.
 If this works, I can make countless Reddit videos daily and become a millionaire if the videos amass a big following. :)
