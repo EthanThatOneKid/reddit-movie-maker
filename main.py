@@ -31,7 +31,6 @@ def render_progress(ratio, width=40):
     sys.stdout.write('\r')
     sys.stdout.write(render)
     sys.stdout.flush()
-    time.sleep(0.25)
     return render
 
 def split_sentences(text):
@@ -129,6 +128,7 @@ for i in range(len(posts)):
             exit()
         cur_sentence += 1
         render_progress(cur_sentence / total_sentences)
+print("")
 
 ## Creating Video Clips
 print("Creating Video Clips")
@@ -145,6 +145,7 @@ for i in range(len(posts)):
         clips.append(gimme_clip)
         cur_sentence += 1
         render_progress(cur_sentence / total_sentences)
+print("")
 
 ## Exporting Final Product
 print("Exporting Final Product")
@@ -160,3 +161,4 @@ os.remove("{}/data.json".format(instance_root))
 
 ## All Done!
 print("😊 All Done! 😊")
+end()
