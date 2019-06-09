@@ -165,5 +165,6 @@ os.remove("{}/data.json".format(instance_root))
 
 ## All Done!
 print("😊 All Done! 😊")
-print("Final Product saved as {}".format(save_path))
+print("Final Product saved as...")
+print(save_path)
 end()
