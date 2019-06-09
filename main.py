@@ -87,8 +87,10 @@ except:
 ## Getting Comments from Reddit Submission Instance
 print("Getting Comments from Reddit Submission Instance")
 submission = reddit.submission(id=post_id)
-submission.comment_sort = "top" # "confidence"
-posts = [[submission.subreddit.display_name, get_author(submission), [submission.title]]]
+sort = "top" # "confidence"
+title = "{} ({} posts)".format(submission.subreddit.display_name, sort)
+submission.comment_sort = sort
+posts = [[title, get_author(submission), [submission.title]]]
 total_sentences = 0
 for comment in submission.comments[:comment_limit]:
     if "body" not in comment.__dict__ or len(comment.body) < 3: break
@@ -96,6 +98,7 @@ for comment in submission.comments[:comment_limit]:
     total_sentences += len(comment_sentences)
     posts.append([submission.title, get_author(comment), comment_sentences])
 posts.append(end_card)
+
 ## Preparing Data for Imaging
 print("Preparing Data for Imaging")
 instance_root = create_directory_name(submission.title)
