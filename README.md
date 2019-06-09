@@ -8,6 +8,11 @@
 * `google-api-python-client`
 * `httplib`
 
+## Etok Description Boilerplate
+Welcome to the description! You can support the channel by buying me a virtual coffee and leaving plenty of super cool likes and comments!
+😊
+This video is based on a post from [r/AskReddit](https://www.reddit.com/r/AskReddit/).
+
 ## Sample Scripts
 * `py main.py "POST_ID"`
   * saves video as `db/DATE/[TITLE]/final.mp4`
