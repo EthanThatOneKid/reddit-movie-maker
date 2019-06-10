@@ -70,7 +70,7 @@ def split_sentences(text):
 env = json.load(open("./helpers/dotenv.json"))
 post_id = sys.argv[1]
 end_card = ["Thanks!", "EthanThatOneKid", ["Thanks for watching! Please consider liking this video and subscribing to my channel!"]]
-comment_limit = 20
+comment_limit = 30
 
 ## Signing into Reddit's Delicious Server
 print("Signing into Reddit's Delicious Server")
