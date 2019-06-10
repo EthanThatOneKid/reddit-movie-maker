@@ -65,6 +65,10 @@ int[] getRenderSummary(String title, String user, String body) {
 
 };
 
+void renderThumbnail(String title, String subreddit, String path) {
+  // TODO: some shit
+};
+
 void renderPost(String title, String user, String body, String path) {
 
   background(25);
