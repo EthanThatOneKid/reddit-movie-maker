@@ -5,7 +5,7 @@ Welcome to the description 🔮! You can support the channel by donating a virtu
 ℹ Original Post: https://www.reddit.com/r/{SUB}/comments/{POST}
 ℹ Date Created: {DATE}
 
-❓ Question of the Day:
+❓ Trivia Question of the Day:
 ⚓ Difficulty lv. {DIFFICULTY}
 😺 Category: {CATEGORY}
 🧠 Q: {QUESTION}
