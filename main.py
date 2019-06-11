@@ -122,7 +122,7 @@ description = description.replace("{DATE}", datetime.datetime.today().strftime("
 description = description.replace("{DIFFICULTY}", str(question_data["value"]))
 description = description.replace("{CATEGORY}", question_data["category"]["title"])
 description = description.replace("{QUESTION}", question_data["question"])
-description = description.replace("{ANSWER}", text2art(question_data["answer"], "flip"))
+description = description.replace("{ANSWER}", text2art(question_data["answer"], "mirror_flip"))
 description = description.replace("{MOOD}", art("rand"))
 open(description_save_path, "w", encoding="utf8").write(description)
 
