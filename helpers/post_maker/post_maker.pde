@@ -37,9 +37,15 @@ void setup() {
     
     for (int j = 0; j < sentences.size(); j++) {
       
-      String savePath = String.format("%s\\photos\\%s\\%s.png", root, i, j);
+      String savePath = String.format("%s/photos/%s/%s.png", root, i, j);
       accumulator += sentences.getString(j) + " ";
       renderPost(title, user, accumulator, savePath);
+      
+      // saving the thumbnail
+      if (i == 0 && j == 0) {
+        savePath = String.format("%s/thumb.png", root);
+        renderPost(title, user, accumulator, savePath);
+      }
       
     }
     
@@ -76,10 +82,6 @@ int[] getRenderSummary(String title, String user, String body) {
   result[0] = offset;
   return result;
 
-};
-
-void renderThumbnail(String title, String subreddit, String path) {
-  // TODO: some shit
 };
 
 void renderPost(String title, String user, String body, String path) {
