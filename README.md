@@ -5,9 +5,7 @@
 * `moviepy`
 * `praw`
 * `slugify`
-
-## Etok Description Boilerplate
-Welcome to the description 🔮! You can support the channel by donating a virtual coffee from https://www.buymeacoff.ee/etok ☕ and leaving plenty of super cool likes 👍 and comments 💬! This video is based on a post from https://www.reddit.com/r/AskReddit.
+* `art`
 
 ## Sample Scripts
 * `py main.py "POST_ID"`

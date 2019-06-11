@@ -1,8 +1,9 @@
 # Dependencies
-import os, re, sys, json, time, shutil, requests, datetime, subprocess
+import os, re, sys, json, math, time, shutil, requests, datetime, subprocess
 from slugify import slugify
 from gtts import gTTS
 from moviepy.editor import *
+from art import *
 import praw
 
 # Helpers
@@ -88,7 +89,7 @@ except:
 print("Getting Comments from Reddit Submission Instance")
 submission = reddit.submission(id=post_id)
 sort = "top" # "confidence"
-title = "{} ({} posts)".format(submission.subreddit.display_name, sort)
+title = "{} ({} comments)".format(submission.subreddit.display_name, sort)
 submission.comment_sort = sort
 posts = [[title, get_author(submission), [submission.title]]]
 total_sentences = 0
@@ -107,6 +108,23 @@ if os.path.isdir(instance_root):
 os.makedirs(instance_root)
 data_path = "{}/data.json".format(instance_root)
 open(data_path, "w").write(json.dumps({"data": posts}))
+
+## Generating YouTube Description
+print("Generating YouTube Description")
+description_template_path = "static/description_template.txt"
+description_save_path = "{}/description.txt".format(instance_root)
+description = open(description_template_path, "r", encoding="utf8").read()
+question_url = "http://jservice.io/api/random"
+question_data = requests.get(question_url).json()[0]
+description = description.replace("{SUB}", submission.subreddit.display_name)
+description = description.replace("{POST}", post_id)
+description = description.replace("{DATE}", datetime.datetime.today().strftime("%Y-%m-%d"))
+description = description.replace("{DIFFICULTY}", str(question_data["value"]))
+description = description.replace("{CATEGORY}", question_data["category"]["title"])
+description = description.replace("{QUESTION}", question_data["question"])
+description = description.replace("{ANSWER}", text2art(question_data["answer"], "flip"))
+description = description.replace("{MOOD}", art("rand"))
+open(description_save_path, "w", encoding="utf8").write(description)
 
 ## Creating Images
 print("Creating Images")
@@ -160,10 +178,11 @@ final_video = concatenate_videoclips(clips)
 ## Layering Music
 print("Layering Music")
 bg_music = AudioFileClip("static/music/0.mp3")
-bg_music_repeats = floor(final_video.duration / bg_music.duration)
-bg_music_remainder = ceil(final_video % bg_music.duration)
-bg_music = concatenate_audioclips([bg_music] * bg_music_repeats + [bg_music.set_end(bg_music_remainder)])
-final_video.audio = CompositeAudioClip([final_video.audio, bg_music.volumex(0.5)])
+bg_music_repeats = math.floor(final_video.duration / bg_music.duration)
+bg_music_remainder = final_video.duration % bg_music.duration
+bg_music_audioclips = [bg_music] * bg_music_repeats + [bg_music.set_end(bg_music_remainder)]
+bg_music = concatenate_audioclips(bg_music_audioclips)
+final_video.audio = CompositeAudioClip([final_video.audio, bg_music.volumex(0.2)])
 
 ## Exporting Final Product
 print("Exporting Final Product")
