@@ -14,6 +14,6 @@ Welcome to the description 🔮! You can support the channel by donating a virtu
 .
 💡 A: {ANSWER}
 
-🎁 Mood of the Day: {MOOD}
+🎁 Mood of the Day (randomly generated): {MOOD}
 
 👋 Have a fantastic day, homie! 😘
