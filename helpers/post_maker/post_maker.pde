@@ -5,6 +5,7 @@ int margin;
 int maxWidth;
 int padding;
 float lineSpaceScalar;
+PImage bgImg;
 
 void setup() {
 
@@ -15,25 +16,37 @@ void setup() {
   maxWidth = width - (2 * margin);
   padding = 10;
   lineSpaceScalar = 1.15;
+  
+  int bgImgIndex = floor(random(listFiles(sketchPath()).length));
+  String bgImgPath = String.format("%s/static/backgrounds/%n.jpg", sketchPath(), bgImgIndex);
+  bgImg = loadImage(bgImgPath);
 
   size(1280, 720);
   String root = args[0];
   String inputPath = String.format("%s\\data.json", root);
   JSONObject rawInputData = loadJSONObject(inputPath);
   JSONArray posts = rawInputData.getJSONArray("data");
+  
   for (int i = 0; i < posts.size(); i++) {
+    
     JSONArray post = posts.getJSONArray(i);
     String title = post.getString(0);
     String user = String.format("u/%s", post.getString(1));
     JSONArray sentences = post.getJSONArray(2);
     String accumulator = "";
+    
     for (int j = 0; j < sentences.size(); j++) {
+      
       String savePath = String.format("%s\\photos\\%s\\%s.png", root, i, j);
       accumulator += sentences.getString(j) + " ";
       renderPost(title, user, accumulator, savePath);
+      
     }
+    
   }
+  
   exit();
+  
 };
 
 int[] getRenderSummary(String title, String user, String body) {
@@ -70,8 +83,9 @@ void renderThumbnail(String title, String subreddit, String path) {
 };
 
 void renderPost(String title, String user, String body, String path) {
-
-  background(25);
+  
+  image(bgImg, 0, 0);
+  background(51, 51, 51, 51);
 
   int[] renderPositions = getRenderSummary(title, user, body);
   int offset = renderPositions[0];
@@ -93,7 +107,8 @@ void renderPost(String title, String user, String body, String path) {
   fill(180);
   textSize(bodySize);
   text(body, margin, bodyY, maxWidth, 9999);
-
+  
+  // save
   save(path);
 
 };
