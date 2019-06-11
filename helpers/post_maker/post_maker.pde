@@ -20,8 +20,10 @@ void setup() {
   maxWidth = width - (2 * margin);
   padding = int(10 * fontSizeScalar);
   
-  int bgImgIndex = floor(random(listFiles(sketchPath()).length));
-  String bgImgPath = String.format("%s/static/backgrounds/%d.jpg", sketchPath(), bgImgIndex);
+  String bgImgDir = String.format("%s/static/backgrounds/", sketchPath());
+  int bgImgIndex = floor(random(0, listFiles(bgImgDir).length));
+  String bgImgPath = String.format("%s/%d.jpg", bgImgDir, bgImgIndex);
+  println(String.format("Using background image #%d", bgImgIndex));
   bgImg = loadImage(bgImgPath);
 
   size(1280, 720);
@@ -89,7 +91,7 @@ int[] getRenderSummary(String title, String user, String body) {
 
 void renderPost(String title, String user, String body, String path) {
   
-  tint(0);
+  tint(16, 39, 66);
   image(bgImg, 0, 0);
 
   int[] renderPositions = getRenderSummary(title, user, body);
