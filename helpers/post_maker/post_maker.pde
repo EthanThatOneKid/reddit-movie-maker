@@ -5,20 +5,23 @@ int margin;
 int maxWidth;
 int padding;
 float lineSpaceScalar;
+float fontSizeScalar;
 PImage bgImg;
 
 void setup() {
+  
+  fontSizeScalar = 1.8;
+  lineSpaceScalar = 1.15;
 
-  titleSize = 25;
-  userSize = 10;
-  bodySize = 20;
+  titleSize = int(25 * fontSizeScalar);
+  userSize = int(10 * fontSizeScalar);
+  bodySize = int(20 * fontSizeScalar);
   margin = 20;
   maxWidth = width - (2 * margin);
-  padding = 10;
-  lineSpaceScalar = 1.15;
+  padding = int(10 * fontSizeScalar);
   
   int bgImgIndex = floor(random(listFiles(sketchPath()).length));
-  String bgImgPath = String.format("%s/static/backgrounds/%n.jpg", sketchPath(), bgImgIndex);
+  String bgImgPath = String.format("%s/static/backgrounds/%d.jpg", sketchPath(), bgImgIndex);
   bgImg = loadImage(bgImgPath);
 
   size(1280, 720);
@@ -86,8 +89,8 @@ int[] getRenderSummary(String title, String user, String body) {
 
 void renderPost(String title, String user, String body, String path) {
   
+  tint(0);
   image(bgImg, 0, 0);
-  background(51, 51, 51, 51);
 
   int[] renderPositions = getRenderSummary(title, user, body);
   int offset = renderPositions[0];
