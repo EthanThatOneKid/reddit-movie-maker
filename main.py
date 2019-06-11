@@ -153,10 +153,21 @@ for i in range(len(posts)):
         render_progress(cur_sentence / total_sentences)
 print("")
 
+## Concatenating Videoclips
+print("Concatenating Videoclips")
+final_video = concatenate_videoclips(clips)
+
+## Layering Music
+print("Layering Music")
+bg_music = AudioFileClip("static/music/0.mp3")
+bg_music_repeats = floor(final_video.duration / bg_music.duration)
+bg_music_remainder = ceil(final_video % bg_music.duration)
+bg_music = concatenate_audioclips([bg_music] * bg_music_repeats + [bg_music.set_end(bg_music_remainder)])
+final_video.audio = CompositeAudioClip([final_video.audio, bg_music.volumex(0.5)])
+
 ## Exporting Final Product
 print("Exporting Final Product")
 save_path = "{}/{}.mp4".format(instance_root, "final")
-final_video = concatenate_videoclips(clips)
 final_video.write_videofile(save_path, fps=24)
 
 ## Deleting All Temporary Files
