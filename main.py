@@ -70,7 +70,7 @@ def split_sentences(text):
 # Main Process
 env = json.load(open("./helpers/dotenv.json"))
 post_id = sys.argv[1]
-comment_limit = sys.argv[2] if len(sys.argv) > 2 else 25
+comment_limit = int(sys.argv[2]) if len(sys.argv) > 2 else 25
 end_card = ["Thanks!", "EthanThatOneKid", ["Thanks for watching! Please consider liking this video and subscribing to my channel!"]]
 
 ## Signing into Reddit's Delicious Server
