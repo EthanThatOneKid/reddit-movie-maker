@@ -1,4 +1,4 @@
-# Dependencies
+﻿# Dependencies
 import os, re, sys, json, math, time, shutil, requests, datetime, subprocess
 from slugify import slugify
 from gtts import gTTS
@@ -95,7 +95,8 @@ posts = [[title, get_author(submission), [submission.title]]]
 total_sentences = 0
 for comment in submission.comments[:comment_limit]:
     if "body" not in comment.__dict__ or len(comment.body) < 3: break
-    comment_sentences = split_sentences(comment.body)
+    corpus = comment.body.replace(").", ") .")
+    comment_sentences = split_sentences(corpus)
     total_sentences += len(comment_sentences)
     posts.append([submission.title, get_author(comment), comment_sentences])
 posts.append(end_card)
