@@ -119,6 +119,7 @@ question_url = "http://jservice.io/api/random"
 question_data = requests.get(question_url).json()[0]
 description = description.replace("{SUB}", submission.subreddit.display_name)
 description = description.replace("{POST}", post_id)
+description = description.replace("{TITLE}", submission.title)
 description = description.replace("{DATE}", datetime.datetime.today().strftime("%Y-%m-%d"))
 description = description.replace("{DIFFICULTY}", str(question_data["value"]))
 description = description.replace("{CATEGORY}", question_data["category"]["title"])
@@ -200,4 +201,13 @@ os.remove("{}/data.json".format(instance_root))
 print("😊 All Done! 😊")
 print("Final Product saved as...")
 print(save_path)
+
+## Uploading Video to YouTube
+print("Uploading Video to YouTube")
+keywords = re.sub("\W", " ", submission.title.lower()).split(" ")
+keywords = filter(lambda w: len(w) > 0, keywords)
+title = "{} r/{} | ".format(pickEmoji(keywords), submission.subreddit.display_name)
+title += submission.title[:100 - len(title)]
+cmd = "youtube-upload\\upload.sh {} {} {} {}".format(save_path, title, description, keywords)
+subprocess.call(cmd)
 exit()

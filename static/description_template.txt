@@ -2,6 +2,7 @@ Welcome to the description 🔮! You can support the channel by donating a virtu
 
 😊 Support the Channel: https://www.buymeacoff.ee/etok
 
+🍰 Original Post Title: {TITLE}
 💁‍ Original Post: https://www.reddit.com/r/{SUB}/comments/{POST}
 📅 Date Created: {DATE}
 
