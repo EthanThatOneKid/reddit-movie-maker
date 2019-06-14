@@ -4,8 +4,8 @@ from slugify import slugify
 from gtts import gTTS
 from moviepy.editor import *
 from art import *
-from gensim.test.utils import common_texts
-from gensim.models import Word2Vec
+# from gensim.test.utils import common_texts
+# from gensim.models import Word2Vec
 import praw
 
 # Helpers
@@ -26,14 +26,17 @@ def get_author(r):
         author = "Anonymous"
     return author
 
-def pickEmoji(_words):
-    words = []
-    model = Word2Vec(common_texts, size=100, window=5, min_count=1, workers=4)
-    for word in _words:
-        gimmeRelatedWords = model.most_similar(positive=[word], topn=10)
-        words += [word]
-        words += list(map(lambda (w, _): w))
-    print(words)
+# def pickEmoji(_words):
+#     words = []
+#     model = Word2Vec(common_texts, size=1000, window=5, min_count=1, workers=4)
+#     for word in _words:
+#         words += [word]
+#         try:
+#             gimmeRelatedWords = model.most_similar(positive=[word], topn=10)
+#             words += list(map(lambda w, _: w))
+#         except:
+#             print("{} does not exist in the emojify vocabulary".format(word))
+#     print(words)
 
 def render_progress(ratio, width=40):
     completed_units = int(ratio * width)
@@ -213,18 +216,4 @@ os.remove("{}/data.json".format(instance_root))
 print("All Done!!")
 print("Final Product saved as...")
 print(save_path)
-
-## Picking Relevant Emoji
-print("Picking Relevant Emoji")
-keywords = re.sub("\W", " ", submission.title.lower()).split(" ")
-keywords = list(filter(lambda w: len(w) > 0, keywords))
-gimmeEmoji = pickEmoji(keywords)
-
-## Uploading Video to YouTube
-print("Uploading Video to YouTube")
-title = "{} r/{} | ".format(gimmeEmoji, submission.subreddit.display_name)
-title += submission.title[:100 - len(title)]
-upload_data_save_path = "upload_data.json".format(instance_root)
-upload_data = [save_path, title, description, keywords]
-open(upload_data_save_path, "w", encoding="utf8").write(json.dumps(upload_data))
 exit()
