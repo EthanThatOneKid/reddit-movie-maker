@@ -26,18 +26,6 @@ def get_author(r):
         author = "Anonymous"
     return author
 
-# def pickEmoji(_words):
-#     words = []
-#     model = Word2Vec(common_texts, size=1000, window=5, min_count=1, workers=4)
-#     for word in _words:
-#         words += [word]
-#         try:
-#             gimmeRelatedWords = model.most_similar(positive=[word], topn=10)
-#             words += list(map(lambda w, _: w))
-#         except:
-#             print("{} does not exist in the emojify vocabulary".format(word))
-#     print(words)
-
 def render_progress(ratio, width=40):
     completed_units = int(ratio * width)
     remaining_units = width - completed_units
