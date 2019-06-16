@@ -9,8 +9,8 @@ except:
 batch_document = open(batch_config_path, "r", encoding="utf8").read()
 commands = []
 for post in batch_document.split("\n"):
-    command = "py main.py {}".format(command)
+    command = "py main.py {}".format(post)
     commands.append(command)
-command = commands.join(" & ")
+command = " & ".join(commands)
 subprocess.call(command)
 exit()
