@@ -12,8 +12,9 @@ except:
 batch_document = open(batch_config_path, "r", encoding="utf8").read()
 commands = []
 for post in batch_document.split("\n"):
-    command = "py main.py {}".format(post)
-    commands.append(command)
+    if len(post) > 0:
+        command = "py main.py {}".format(post)
+        commands.append(command)
 command = " & ".join(commands)
 
 ## Executing Batch Command
