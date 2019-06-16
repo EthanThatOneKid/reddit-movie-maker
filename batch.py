@@ -2,7 +2,7 @@
 import sys, subprocess
 
 # Main Process
-batch_config_path = sys.argv[1]
+batch_config_path = sys.argv[1] or "static/batch_config.txt"
 batch_document = open(batch_config_path, "r", encoding="utf8").read()
 commands = []
 for post in batch_document.split("\n"):
