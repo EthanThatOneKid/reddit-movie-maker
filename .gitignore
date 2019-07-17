@@ -3,6 +3,7 @@ db/*
 helpers/dotenv.json
 client_secret.json
 static/batch_config.txt
+youtube-upload/*
 
 ################## PYTHON ##################
 
