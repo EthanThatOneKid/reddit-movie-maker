@@ -1,4 +1,5 @@
-# Reddit Movie Maker
+# 📽 Reddit Movie Maker
+> This project makes use of Python, Processing, and REST APIs to create Reddit-themed YouTube videos
 
 ## Requirements
 * `gtts`
