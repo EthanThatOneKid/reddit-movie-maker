@@ -1,0 +1,6 @@
+gtts
+moviepy
+praw
+slugify
+art
+emojis
