@@ -2,11 +2,12 @@
 > This project makes use of Python, Processing, and REST APIs to create Reddit-themed YouTube videos
 
 ## Requirements
-* `gtts`
-* `moviepy`
-* `praw`
-* `slugify`
-* `art`
+* see the [`requirements.txt`](requirements.txt) for python modules
+* secrets requirements (found in `helpers/dotenv.json` file):
+  * a processing executable (must place full path to exe)
+  * reddit api authentication, a `client_id`, `client_secret`, and `user_agent`.
+  * for `sketch`, just put your full path to [the processing sketch's directory](helpers/post_maker)
+* perhaps you should use a [python venv](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/) to keep this project self-contained.
 
 ## Sample Scripts
 * `py main.py "POST_ID"`
@@ -20,10 +21,10 @@ If this works, I can make countless Reddit videos daily and become a millionaire
 ## Plan
 
 ### Find Popular Posts
-Use the [Reddit API](https://www.reddit.com/dev/api/). For subreddits, use `https://www.reddit.com/r/[subreddit].json`. For comment threads, use `https://www.reddit.com/r/all/comments/[post_id].json`. Maybe, I can try translating the text in different languages and get multiple versions of the same video.
+Use the [Reddit API](https://www.reddit.com/dev/api/). For subreddits, use `https://www.reddit.com/r/[subreddit].json`. For comment threads, use `https://www.reddit.com/r/all/comments/[post_id].json` or just use a Reddit API wrapper like praw. Maybe for a future update, I can try translating the text in different languages and get multiple versions of the same video.
 
 ### Visualize Text
-Either create a webview using JavaScript and writing an html file with updated text and screenshot the views, or create a sketch in Processing and pass the text as a parameter and save screenshots from that.
+I wrote a processing (java) script that loads the comment data through a given JSON file. It generates an image for each sentence of each comment and places it in a temporary directory. The code for this can be viewed [here](helpers/post_maker/post_maker.pde).
 
 ### Voice Synthesis
 Install gTTS: `sudo pip install gTTS`.
